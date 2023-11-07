@@ -1,1 +1,1 @@
-# ZineManager
+# Zinemanager

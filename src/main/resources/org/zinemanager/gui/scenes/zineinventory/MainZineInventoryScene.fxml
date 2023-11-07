@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineinventory.MainZineInventoryController">
+   <children>
+      <MenuBar minHeight="-Infinity" minWidth="-Infinity">
+        <menus>
+          <Menu mnemonicParsing="false" text="Datei">
+            <items>
+                  <MenuItem fx:id="miSave" mnemonicParsing="false" onAction="#save" text="Speichern" />
+                  <MenuItem fx:id="miLoad" mnemonicParsing="false" onAction="#load" text="Laden" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+                  <MenuItem fx:id="miImport" mnemonicParsing="false" onAction="#importDataSet" text="Importieren" />
+                  <MenuItem fx:id="miExport" mnemonicParsing="false" onAction="#exportDataSet" text="Exprotieren" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="miBack" mnemonicParsing="false" onAction="#back" text="Zurück" />
+                  <MenuItem fx:id="miClose" mnemonicParsing="false" onAction="#close" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Zines">
+            <items>
+                  <MenuItem fx:id="miNewZine" mnemonicParsing="false" onAction="#createZine" text="Zine erstellen" />
+                  <MenuItem fx:id="miEditZine" mnemonicParsing="false" onAction="#editZine" text="Zine bearbeiten" />
+                  <MenuItem fx:id="miRemoveZine" mnemonicParsing="false" onAction="#removeZine" text="Zine entfernen" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="miZines" mnemonicParsing="false" onAction="#openZines" text="Zine Übersicht" />
+            </items>
+          </Menu>
+            <Menu mnemonicParsing="false" text="Zinelists">
+              <items>
+                <MenuItem fx:id="miNewZinelist" mnemonicParsing="false" onAction="#createZineList" text="Zineliste erstellen" />
+                  <MenuItem fx:id="miEditZinelist" mnemonicParsing="false" onAction="#editZineList" text="Zineliste bearbeiten" />
+                  <MenuItem fx:id="miRemoveZinelist" mnemonicParsing="false" onAction="#removeZineList" text="Zineliste entfernen" />
+              </items>
+            </Menu>
+          <Menu mnemonicParsing="false" text="Hilfe">
+            <items>
+                  <MenuItem fx:id="miOptions" mnemonicParsing="false" onAction="#openOptions" text="Einstellungen" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#about" text="Über" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <Label fx:id="lTitle" alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" text="Zine Inventur">
+         <font>
+            <Font name="System Bold" size="24.0" />
+         </font>
+      </Label>
+      <SplitPane dividerPositions="0.29797979797979796" minHeight="-Infinity" minWidth="-Infinity">
+        <items>
+            <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
+               <children>
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btNewZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createZine" prefHeight="30.0" prefWidth="150.0" text="Zine aufnehmen" />
+                        <Button fx:id="btEditZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#editZine" prefHeight="30.0" prefWidth="150.0" text="Zine bearbeiten" />
+                        <Button fx:id="btRemoveZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeZine" prefHeight="30.0" prefWidth="150.0" text="Zine entfernen" />
+                     </children>
+                  </VBox>
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btNewZineList" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createZineList" prefHeight="30.0" prefWidth="150.0" text="Zineliste erstellen" />
+                        <Button fx:id="btEditZineList" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#editZineList" prefHeight="30.0" prefWidth="150.0" text="Zineliste bearbeiten" />
+                        <Button fx:id="btRemoveZineList" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeZineList" prefHeight="30.0" prefWidth="150.0" text="Zineliste entfernen" />
+                     </children>
+                  </VBox>
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btZines" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openZines" prefHeight="30.0" prefWidth="150.0" text="Zines" />
+                        <Button fx:id="btCategories" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openCategories" prefHeight="30.0" prefWidth="150.0" text="Kategorien" />
+                     </children>
+                  </VBox>
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <Button fx:id="btBack" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="150.0" text="Zurück" />
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding>
+            </VBox>
+            <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity">
+                     <children>
+                        <Label minHeight="-Infinity" minWidth="-Infinity" text="Zine Listen">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <HBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity">
+                           <children>
+                              <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
+                              <DatePicker fx:id="dpSelectedDate" minHeight="-Infinity" minWidth="-Infinity" />
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+                  <TabPane fx:id="tpZineLists" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="580.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
+                  <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
+                     <children>
+                        <Button fx:id="btZinesUpdate" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateZines" prefHeight="30.0" prefWidth="160.0" text="Zines aktualisieren" />
+                        <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
+                        <Button fx:id="btInputClean" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cleanInput" prefHeight="30.0" prefWidth="160.0" text="Eingaben zurücksetzten" />
+                     </children>
+                     <VBox.margin>
+                        <Insets left="10.0" right="10.0" />
+                     </VBox.margin></HBox>
+               </children>
+               <padding>
+                  <Insets left="10.0" right="10.0" />
+               </padding></VBox>
+        </items>
+         <VBox.margin>
+            <Insets bottom="10.0" top="10.0" />
+         </VBox.margin>
+         <padding>
+            <Insets bottom="10.0" top="10.0" />
+         </padding>
+      </SplitPane>
+      <HBox minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <Label fx:id="lVersion" minHeight="-Infinity" minWidth="-Infinity" text="v0.0">
+               <HBox.margin>
+                  <Insets left="10.0" right="10.0" />
+               </HBox.margin>
+            </Label>
+         </children>
+      </HBox>
+   </children>
+</VBox>

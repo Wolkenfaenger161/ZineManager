@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.MainMenuController">
+   <children>
+      <MenuBar minHeight="-Infinity" minWidth="-Infinity">
+        <menus>
+          <Menu mnemonicParsing="false" text="Datei">
+            <items>
+                  <MenuItem fx:id="miPrinter" mnemonicParsing="false" onAction="#openZinePrinter" text="Zines drucken" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="miBack" mnemonicParsing="false" onAction="#back" text="Beenden" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Bearbeiten">
+            <items>
+              <MenuItem fx:id="miInventory" mnemonicParsing="false" onAction="#openZineInventory" text="Zine Inventur" />
+                  <MenuItem fx:id="miDataSet" mnemonicParsing="false" onAction="#openDataSetSelector" text="DataSet ändern" />
+            </items>
+          </Menu>
+          <Menu mnemonicParsing="false" text="Hilfe">
+            <items>
+                  <MenuItem fx:id="miOptions" mnemonicParsing="false" onAction="#openOptions" text="Einstellungen" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
+              <MenuItem fx:id="miAbout" mnemonicParsing="false" onAction="#openAbout" text="Über" />
+            </items>
+          </Menu>
+        </menus>
+      </MenuBar>
+      <VBox minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <Label fx:id="lTitle" alignment="CENTER" text="Zine Manager">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="20.0">
+               <children>
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btInventory" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openZineInventory" prefHeight="30.0" prefWidth="120.0" text="Zine Inventur" />
+                        <Button fx:id="btPrint" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openZinePrinter" prefHeight="30.0" prefWidth="120.0" text="Zines drucken" />
+                     </children>
+                  </VBox>
+                  <Button fx:id="btOptions" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openOptions" prefHeight="30.0" prefWidth="120.0" text="Einstellungen" />
+                  <Button fx:id="btBack" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="120.0" text="Beenden" />
+               </children>
+            </VBox>
+         </children>
+         <padding>
+            <Insets left="20.0" right="20.0" />
+         </padding>
+      </VBox>
+      <HBox minHeight="-Infinity" minWidth="-Infinity">
+         <children>
+            <Label fx:id="lVersion" text="v 0.0" />
+         </children>
+         <VBox.margin>
+            <Insets left="10.0" right="10.0" />
+         </VBox.margin>
+      </HBox>
+   </children>
+</VBox>

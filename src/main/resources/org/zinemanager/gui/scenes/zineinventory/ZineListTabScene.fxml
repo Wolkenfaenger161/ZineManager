@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineinventory.ZineListTabController">
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+   <children>
+      <Label fx:id="lTabTitle" minHeight="-Infinity" minWidth="-Infinity" text="Zinelist Title">
+         <font>
+            <Font name="System Bold" size="18.0" />
+         </font>
+      </Label>
+      <Label fx:id="lZineListCount" minHeight="-Infinity" minWidth="-Infinity" text="Anzahl Zines:" />
+      <ScrollPane minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+         <content>
+            <VBox minHeight="-Infinity" minWidth="-Infinity">
+               <children>
+                  <TableView fx:id="tvZineList" editable="true" minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
+                    <columns>
+                      <TableColumn fx:id="tcZines" editable="false" minWidth="-Infinity" prefWidth="250.0" text="Zine" />
+                      <TableColumn fx:id="tcCategories" editable="false" minWidth="-Infinity" prefWidth="100.0" text="Kategorie" />
+                        <TableColumn minWidth="-Infinity" prefWidth="-1.0" resizable="false" text="Zine Anzahl">
+                           <columns>
+                              <TableColumn fx:id="tcQuotas" editable="false" minWidth="-Infinity" prefWidth="50.0" text="Soll" />
+                              <TableColumn fx:id="tcLasts" editable="false" minWidth="-Infinity" prefWidth="50.0" text="Letzte" />
+                              <TableColumn fx:id="tcCurrents" minWidth="-Infinity" prefWidth="50.0" text="Aktuell" />
+                           </columns>
+                        </TableColumn>
+                        <TableColumn fx:id="tcTotals" editable="false" minWidth="-Infinity" prefWidth="50.0" resizable="false" text="Gesamt" />
+                    </columns>
+                  </TableView>
+               </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </children>
+</VBox>
