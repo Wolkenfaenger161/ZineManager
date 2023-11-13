@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	27.09.2023
+/**	ZineManager v0.0		Wf	11.11.2023
  * 	
  * 	gui.stages
  * 	  BasicStage
@@ -23,13 +23,13 @@ import org.zinemanager.logic.manager.ZineManager;
 
 public class MainMenuStage extends BasicStage<MainMenuController> {
 
-	/**	Wf	27.09.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @param pZineManager
 	 */
 	public MainMenuStage(ZineManager pZineManager) {
 		super("org/zinemanager/gui/scenes/MainMenuScene.fxml", "Zine Manager v"+LogManager.getVersion());
 		
-		controller.setUp(pZineManager);
+		controller.setUp(pZineManager, this);
 	}
 }

@@ -1,0 +1,62 @@
+# This workflow will build a Java project with Gradle
+# For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
+#                      and: https://docs.gluonhq.com/#platforms_android
+
+name: Java CI with Gradle Linux
+
+on:
+  push:
+    branches: [ main ]
+  #pull_request:
+    #branches: [ main ]
+
+jobs:
+  build-gradle-project:
+    runs-on: ubuntu-latest
+      
+    steps:
+      # Checkout your project
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'liberica'
+
+      # Make sure the latest GraalVM is installed.
+      # after this step env.JAVA_HOME and env.GRAALVM_HOME will point to the GraalVM location
+      - name: Setup GraalVM built by Gluon
+        uses: gluonhq/setup-graalvm@master
+        # set GITHUB_TOKEN to avoid exceeding GitHub's API rate limit
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Install extra required packaged on top of ubuntu-latest
+      - name: Install libraries
+        run: sudo apt install libasound2-dev libavcodec-dev libavformat-dev libavutil-dev libgl-dev libgtk-3-dev libpango1.0-dev libxtst-dev
+
+      # Create a staging directory where the binary will be copied into
+      - name: Make staging directory
+        run: mkdir staging
+
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # Build your project using Maven
+      # The android profile is used, which means a native build will be created for the client target android.
+      # This step also uses some env variables taken from the repo secrets. See the section 'Setup Android Keystore' below.
+      - name: Linux Build with Gradle
+        run: ./gradlew clean nativeBuild nativePackage --stacktrace
+
+      # Copy the native binary to the staging directory
+      - name: Copy native image to staging
+        run: cp -r build/gluonfx/x86_64-linux/ZineManager staging
+
+
+      # Upload the staging directoy as a build artifact
+      - name: Upload
+        uses: actions/upload-artifact@v2
+        with:
+          name: Package
+          path: staging

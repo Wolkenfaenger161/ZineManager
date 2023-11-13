@@ -1,8 +1,8 @@
-/**	ZineManager v0.0	Wf	19.10.2023
+/**	ZineManager v0.0	Wf	12.11.2023
  * 
  * 	logic.manager
- * 	BasicManager
- * 	  DataSetManager
+ * 	  BasicManager
+ * 	  	DataSetManager
  * 
  * 	Exceptions:
  * 	  01 Wrong length
@@ -18,17 +18,18 @@
 
 package org.zinemanager.logic.manager;
 
-import java.util.ArrayList;
+import java.nio.file.NoSuchFileException;
 
 import org.zinemanager.logic.entities.DataSet;
+import org.zinemanager.logic.exceptions.NoFileLoadedException;
 
 public class DataSetManager extends BasicManager {
 	private DatabaseManager databaseManager;
 	private SettingManager settingManager;
 
-	private ArrayList<DataSet> dataSets;
+	private DataSet currentDataset;
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pDatabaseManager
 	 * @param pSettingManager
@@ -45,273 +46,166 @@ public class DataSetManager extends BasicManager {
 		}
 		
 		try{ 
-			if (databaseManager != null) dataSets = databaseManager.loadAllDataSets();
-			else dataSets = new ArrayList<DataSet>();
-		} catch (Exception ex) {LogManager.handleException(ex);}
+			if (databaseManager != null) {
+				try {
+					currentDataset = databaseManager.loadDataSet(databaseManager.getCurrentDirectoryFilePath());
+					settingManager.setCurrentDataSetPath(databaseManager.getCurrentDirectoryFilePath());
+				}catch(NoFileLoadedException nfle) {
+					try {
+						if ((settingManager != null) && (settingManager.getCurrentDataSetPath() != "")) 
+							currentDataset = databaseManager.loadDataSet(settingManager.getCurrentDataSetPath());
+						else currentDataset = null;
+					}catch(NoFileLoadedException nfle2) { 
+						currentDataset = null;
+						settingManager.setCurrentDataSetPath("");
+					}
+				} 
+			} else currentDataset = null;
+		}catch (Exception ex) {LogManager.handleException(ex);}
 	}
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
-	 * @param pID
 	 * @return
 	 * @throws Exception
 	 */
-	protected DataSet getDataSet(int pID) throws Exception{
-		DataSet vRet = null;
-		
-		if (pID >= 0) {
-			for (DataSet vDataSet : dataSets) {
-				if (vDataSet.getId() == pID) vRet = vDataSet;
-			}
-		} else throw new Exception("02; gDS,DSM");
-		
-		return vRet;
+	protected DataSet getCurrentDataSet(){
+		return currentDataset;
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @return
 	 * @throws Exception
 	 */
-	protected ArrayList<DataSet> getDatasetCopy() throws Exception{
-		ArrayList<DataSet> vRet = new ArrayList<DataSet>();
+	protected DataSet getDatasetCopy() throws Exception{
+		return (DataSet)currentDataset.clone();
+	}
+	
+	/**	Wf	11.11.2023
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public String getDataSetName(){
+		String vRet = "";
 		
-		for (DataSet vtemp : dataSets) {
-			try { vRet.add(vtemp.clone(vtemp.getId())); }
-			catch(Exception ex) {throw ex;}
+		if (currentDataset != null) {
+			vRet = currentDataset.getName();
 		}
 		
 		return vRet;
 	}
 	
-	/**	Wf	07.10.2023
-	 * 
-	 * @param pID
-	 * @return
-	 * @throws Exception
-	 */
-	public String getDataSetName(int pID) throws Exception{
-		String vRet = "";
-		
-		if (pID >= 0) {
-			for (DataSet vDataSet : dataSets) {
-				if (vDataSet.getId() == pID) vRet = vDataSet.getName();
-			}
-		} else throw new Exception("02; gDSN,DSM");
-		
-		return vRet;
-	}
-	
-	/**	Wf	07.10.2023
-	 * 
-	 * @return
-	 */
-	public ArrayList<Integer> getDataSetIDs() {
-		return createIDList(dataSets);
-	}
-	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @param pDataSet
 	 * @throws Exception
 	 */
-	protected void setDataSet(DataSet pDataSet) throws Exception{
-		boolean vDataSetIsSet = false;
-		
-		if (pDataSet != null) {
-			for (DataSet vDataSet : dataSets) {
-				if (vDataSet.getId() == pDataSet.getId()) {
-					replaceDataSet(pDataSet, vDataSet);
-					
-					vDataSetIsSet = true;
-				}
-			}
-			
-			if (!vDataSetIsSet) throw new Exception("02; sDS,DSM");
-		}else throw new Exception("04; sDS,DSM");
+	protected void setCurrentDataSet(DataSet pDataSet) throws Exception{
+		if (pDataSet != null) currentDataset = pDataSet;
+		else throw new Exception("04; sCDS,DSM");
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
-	 * @param pID
 	 * @param pName
 	 * @throws Exception
 	 */
-	public void setDataSetName(int pID, String pName) throws Exception{
-		boolean vNameAlreadsUsed = false;
-		DataSet vTemp = null;
-		
-		if ((pName != null) && (!pName.equals(""))) {
-			for (DataSet vDataSet : dataSets) {
-				if (vDataSet.getId() == pID) vTemp = vDataSet;
-				else if (vDataSet.getName().equals(pName)) vNameAlreadsUsed = true;
-			}
-			
-			if ((vTemp != null) && (!vNameAlreadsUsed)) vTemp.setName(pName);
-			else throw new Exception("02; sDSN,DSM");
-		}
+	public void setCurrentDataSetName(String pName) throws Exception{
+		if ((pName != null) && (!pName.equals(""))) currentDataset.setName(pName);
+		else throw new Exception("02/04; sCDSN,DSM");
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @param pID
 	 * @return
 	 */
-	public boolean hasDataSet(int pID) {
-		boolean vRet = false;
-		
-		for (DataSet vTemp : dataSets) {
-			if (vTemp.getId() == pID) vRet = true;
-		}
-		
-		return vRet;
+	public boolean hasDataSetLoaded() {
+		return (currentDataset != null);
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pName
-	 * @return
-	 * @throws Exception
 	 */
-	public int addDataSet(String pName) throws Exception{
-		int vRet = -1;
-		boolean vIsNameAlreadyUsed = false;
+	public void createNewDataset() {
+		currentDataset = new DataSet(settingManager.getLastDataSetID(), "Useless");
 		
-		if ((pName != null) && (!pName.equals(""))) {
-			for (DataSet vDataSet : dataSets) {
-				if (vDataSet.getName().equals(pName)) vIsNameAlreadyUsed = true;
-			}
-			
-			if (!vIsNameAlreadyUsed) {
-				vRet = settingManager.determineNextDataSetID();
-				dataSets.add( new DataSet(vRet, pName) );
-			} else throw new Exception("02; aDS,DSM");
-		} else throw new Exception("04/02; aDS,DSM");
-		
-		return vRet;
+		try {
+			settingManager.setLastDataSetID(settingManager.determineNextDataSetID());
+			settingManager.setCurrentDataSetPath("");
+		}catch(Exception ex) {};
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
-	 * @param pID
 	 * @throws Exception
 	 */
-	public void removeDataSet(int pID) throws Exception{
-		DataSet vTemp = getDataSet(pID);
-		
-		if (vTemp != null) {
-			databaseManager.removeDataSet(pID);
-			dataSets.remove(vTemp);
-		}
+	public void deleteDataSet() throws Exception{
+		if (settingManager.getCurrentDataSetPath() != "") databaseManager.removeDataSet(settingManager.getCurrentDataSetPath());
 	}
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
-	 * 
-	 * @param pID
-	 * @throws Exception
-	 */
-	public void saveDataSet(int pID) throws Exception{
-		DataSet vTemp = getDataSet(pID);
-		
-		if (vTemp != null) databaseManager.saveDataSet(vTemp);
-		else throw new Exception("02; sDS,DSM");
-	}
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @throws Exception
 	 */
-	public void saveAllDataSets() throws Exception {
-		for (DataSet vDataSet : dataSets) {
-			databaseManager.saveDataSet(vDataSet);
-		}
+	public void saveDataSet() throws Exception{
+		exportDataSet(settingManager.getCurrentDataSetPath());
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	13.11.2023
 	 * 
-	 * @param pID
 	 * @param pFilePath
 	 * @throws Exception
 	 */
-	public void exportDataSet(int pID, String pFilePath) throws Exception{
-		DataSet vTemp = getDataSet(pID);
-		
-		if (vTemp != null) databaseManager.exportDataSet(vTemp.clone(-1), pFilePath);
-		else throw new Exception("04; eDS,DSM");
+	public void exportDataSet(String pFilePath) throws Exception{
+		if (pFilePath != "") {
+			if (currentDataset != null) databaseManager.saveDataSet(currentDataset, pFilePath);
+			else throw new Exception("04; eDS,DSM");
+		} else throw new NoSuchFileException("02; eDS,DSM");
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	19.10.2023
-	 * 
-	 * @param pID
-	 * @throws Exception
-	 */
-	public void loadDataSet(int pID) throws Exception{
-		replaceDataSet(databaseManager.loadDataSet(pID), getDataSet(pID));
-		
-		getDataSet(pID).checkAllZinePathValididies();
-	}
-	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @throws Exception
 	 */
-	public void loadAllDataSets() throws Exception{
-		dataSets = databaseManager.loadAllDataSets();
+	public void loadDataSet() throws Exception{
+		importDataSet(settingManager.getCurrentDataSetPath());
 	}
 	
-	/**	Wf	19.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pFilePath
 	 * @param pID
 	 * @throws Exception
 	 */
-	public int importDataSet(String pFilePath, int pID) throws Exception{
-		int vRet = pID;
-		DataSet vImportetDataSet = databaseManager.importDataSet(pFilePath);
+	public void importDataSet(String pFilePath) throws Exception{
+		DataSet vLoadedDataSet;
 		
-		if (vImportetDataSet != null) {
-			if (hasDataSet(pID) || (pID == -1)) {
-				if (pID == -1) {
-					vRet = settingManager.determineNextDataSetID();
-					vImportetDataSet.setId( vRet );
-					
-					dataSets.add(vImportetDataSet);
-				}else replaceDataSet(vImportetDataSet, getDataSet(pID));
+		if (pFilePath != "") {
+			vLoadedDataSet = databaseManager.loadDataSet(pFilePath);
+			
+			if (vLoadedDataSet != null) {
+				currentDataset = vLoadedDataSet;
 				
-				vImportetDataSet.checkAllZinePathValididies();
-			} else throw new Exception("02; iDS,DSM");			
-		}else throw new Exception("04; iDS,DSM");
-		
-		return vRet;
+				currentDataset.checkAllZinePathValididies();
+			}else throw new NoFileLoadedException("04; iDS,DSM");
+		} else throw new Exception("02; iDS,DSM");
 	}
 	
-//--------------------------------------------------------------------------------------------------------
-
-	/**	Wf	15.10.2023
-	 * 
-	 * @param pNewDataSet
-	 * @param pOldDataSet
-	 * @throws Exception
-	 */
-	private void replaceDataSet(DataSet pNewDataSet, DataSet pOldDataSet) throws Exception{
-		if ((pNewDataSet != null) && (pOldDataSet != null)) {
-			pOldDataSet.setName(pNewDataSet.getName());
-			
-			pOldDataSet.setCategories(pNewDataSet.getCategories());
-			pOldDataSet.setZines(pNewDataSet.getZines());
-			pOldDataSet.setZineLists(pNewDataSet.getZineLists());
-		}else throw new Exception("04; rDS,DSM");
-	}
 	
 }

@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	11.10.2023
+/**	ZineManager v0.0	Wf	11.11.2023
  * 
  * 	MainManager
  * 
@@ -16,8 +16,10 @@
 
 package org.zinemanager;
 
+import java.nio.file.NoSuchFileException;
 import java.util.ArrayList;
 
+import org.zinemanager.gui.DatasetPorter;
 import org.zinemanager.gui.stages.InfoStage;
 import org.zinemanager.gui.stages.MainMenuStage;
 import org.zinemanager.logic.manager.DataSetManager;
@@ -37,6 +39,8 @@ public class MainManager extends Application {
 	private DataSetManager dataSetManager;
 	private ZineManager zineManager;
 	
+	private DatasetPorter datasetPorter;
+	
 	private ArrayList<InfoStage> infoStages;
 	
 	/**	Wf	21.08.2023
@@ -47,7 +51,7 @@ public class MainManager extends Application {
 		launch(args);
 	}
 
-	/**	Wf	11.10.2023
+	/**	Wf	13.10.2023
 	 * 
 	 */
 	public void start(Stage pPrimaryStage) {
@@ -77,16 +81,23 @@ public class MainManager extends Application {
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	11.10.2023
+	/**	Wf	13.11.2023
 	 * 
 	 */
 	public void closeApp() {
 		LogManager.createLogEntry("Start closing App");
 		
 		try {
-			if (dataSetManager != null) dataSetManager.saveAllDataSets();
+			if (dataSetManager != null) {
+				try {
+					dataSetManager.saveDataSet();
+				}catch(NoSuchFileException nsfe) {
+					LogManager.handleMessage("Fehlende Speicherzieldatei für das aktuelle Dataset.\nBitte eine Zieldatei zum Speichern auswählen.");
+					saveDatasetSavingTry();
+				}catch(Exception ex) {throw ex;}
+				
+			}
 			if (settingManager != null) {
-				if (zineManager != null) settingManager.setCurrentDataSetID(zineManager.getCurrentDataSetID());
 				settingManager.saveAllSettings();
 			}
 			
@@ -137,4 +148,22 @@ public class MainManager extends Application {
 		infoStages.remove(pInfoStage);
 		pInfoStage.hide();
 	}
+
+//--------------------------------------------------------------------------------------------------------
+
+	/**	Wf	13.11.2023
+	 * 
+	 * @throws Exception
+	 */
+	public void saveDatasetSavingTry() throws Exception{
+		if (datasetPorter == null) {
+			if (zineManager != null) datasetPorter = new DatasetPorter(zineManager);
+			else throw new Exception("04; sDsST,MaM");
+		}
+		
+		try { datasetPorter.exportDataset((MainMenuStage)mainStage, 0); }
+		catch(NoSuchFileException nsfe) { saveDatasetSavingTry(); }
+		catch(Exception ex) {throw ex;}
+	}
+	
 }

@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	01.11.2023
+/**	ZineManager v0.0		Wf	12.11.2023
  * 	
  * 	gui.controller
  * 	  BasicController		ParentControllerInterface
@@ -17,11 +17,12 @@
 
 package org.zinemanager.gui.controller;
 
-import org.zinemanager.gui.InvalidZinePathCorrector;
+import java.io.FileNotFoundException;
+
+import org.zinemanager.gui.DatasetPorter;
 import org.zinemanager.gui.stages.ChildStage;
-import org.zinemanager.gui.stages.datasetmanagment.DataSetSelectorStage;
+import org.zinemanager.gui.stages.MainMenuStage;
 import org.zinemanager.gui.stages.zineinventory.MainZineInventoryStage;
-import org.zinemanager.logic.exceptions.InvalidZinePathFileException;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZineManager;
 
@@ -38,29 +39,36 @@ public class MainMenuController extends BasicController implements ParentControl
 	@FXML
 	private MenuItem miBack, miPrinter, miInventory, miDataSet, miOptions, miAbout;
 	
+	protected MainMenuStage stage;
 	protected ChildStage<? extends ChildController<MainMenuController>, MainMenuController> childStage;
 	
 	protected ZineManager zineManager;
+	protected DatasetPorter datasetporter;
 	
-	/**	Wf	27.09.2023
+	/**	Wf	11.11.2023
 	 * 
 	 */
 	public MainMenuController() {
 		super();
 		
+		stage = null;
 		childStage = null;
 		
 		zineManager = null;
+		datasetporter = null;
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	20.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pZineManager
 	 */
-	public void setUp(ZineManager pZineManager) {
+	public void setUp(ZineManager pZineManager, MainMenuStage pStage) {
+		stage = pStage;
 		zineManager = pZineManager;
+		
+		datasetporter = new DatasetPorter(pZineManager);
 		
 		lVersion.setText("v"+LogManager.getVersion());
 		
@@ -72,15 +80,12 @@ public class MainMenuController extends BasicController implements ParentControl
 		miOptions.setDisable(true);
 		miAbout.setDisable(true);
 		
-		try {
-			if (!zineManager.isDataSetLoaded()) openDataSetSelector();
-			else zineManager.loadDataSet(zineManager.getCurrentDataSetID());
-		}catch(InvalidZinePathFileException izpfex) {
-			InvalidZinePathCorrector vCor = new InvalidZinePathCorrector(zineManager, izpfex.getInvalidFilePathZineIDs());
-			
-			vCor.correctZinePaths();
-		}catch(Exception ex) {LogManager.handleException(ex);}
-		
+		while(!zineManager.isDataSetLoaded()) {
+			try {
+				datasetporter.loadDataset(stage);
+			}catch(FileNotFoundException fnfe) {}
+			catch(Exception ex) {LogManager.handleException(ex);} 
+		}		
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -160,14 +165,17 @@ public class MainMenuController extends BasicController implements ParentControl
 		
 	}
 	
-	/**	Wf	19.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 */
 	@FXML
 	public void openDataSetSelector() {
-		childStage = new DataSetSelectorStage<MainMenuController>(zineManager, this);
-		
 		setDisabled();
+		try {
+			datasetporter.loadDataset(stage);
+		}catch(Exception ex) {LogManager.handleException(ex);}
+		
+		setEnabled();
 	}
 	
 	//-----

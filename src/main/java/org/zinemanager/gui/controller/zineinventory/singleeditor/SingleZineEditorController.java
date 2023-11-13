@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	20.10.2023
+/**	ZineManager v0.0		Wf	13.11.2023
  * 	
  * 	gui.controller.zineinventory.multieditor
  * 	  BasicController
@@ -82,7 +82,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	05.10.2023
+	/**	Wf	13.11.2023
 	 * 
 	 * @param pStage
 	 * @throws Exception
@@ -131,8 +131,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		liCategories.setAll( generateNewNameTableElementList(basicManager.getCategoryIDs(), true, pID -> {return basicManager.getCategoryName(pID);}, null) );
 		
 		if (editObjectID != -1) {
-			btProgress.setText("Ändern");
-			
+			btProgress.setText("Ã„ndern");
+
 			tfName.setText(basicManager.getZineName(editObjectID));
 			tfPath.setText(basicManager.getZineFilePath(editObjectID));
 			
@@ -213,7 +213,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		ZineCountTableElement vCurSel = tvCounts.getSelectionModel().getSelectedItem();
 		
 		if (vCurSel != null) liCounts.remove(vCurSel);
-		else LogManager.handleMessage("Kein Eintrag entfernt!\nEs wurde keiner ausgewählt.");
+		else LogManager.handleMessage("Kein Eintrag entfernt!\nEs wurde keiner ausgewï¿½hlt.");
 	}
 	
 	//---------------------------------------------------------------------------------------------------
@@ -279,7 +279,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 				
 				parentController.closeChildStage();
 			} catch(Exception ex) {LogManager.handleException(ex);}
-		} else LogManager.handleMessage("Eingaben nicht gültig!");
+		} else LogManager.handleMessage("Eingaben nicht gï¿½ltig!");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

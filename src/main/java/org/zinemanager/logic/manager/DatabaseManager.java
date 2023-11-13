@@ -1,7 +1,7 @@
-/**	ZineManager v0.0	Wf	11.10.2023
+/**	ZineManager v0.0	Wf	13.11.2023
  * 
  * 	logic.manager
- * 	DatabaseManager
+ * 	  DatabaseManager
  * 
  * 	Exceptions:
  * 	  01 Wrong length
@@ -16,6 +16,7 @@
  * 	  20 Wrong OS
  * 	  21 File dosn't exist
  * 	  22 Wrong Right Error
+ *    23 No Directory Error
  */
 
 package org.zinemanager.logic.manager;
@@ -27,9 +28,9 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 import org.zinemanager.logic.entities.DataSet;
+import org.zinemanager.logic.exceptions.NoFileLoadedException;
 import org.zinemanager.logic.settings.ZineManagerSettings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,15 +38,12 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 public class DatabaseManager {
 	protected String appPath = "/ZineManager";
-	private String	dataSetPath = "/dataSets",
-				   	settingPath = "/settings",
+	private String	settingPath = "/settings",
 					logPath     = "/logs";
 	private String zineManagerSettingPath;
 	
 	protected File systemFile;
-	private File dataSetDirectory, settingDirectory, logDirectory;
-	
-	private HashMap<Integer, String> dataSetFilePaths;
+	private File settingDirectory, logDirectory;
 	
 //--------------------------------------------------------------------------------------------------------
 
@@ -55,38 +53,18 @@ public class DatabaseManager {
 	private void initSettingPaths() {
 		zineManagerSettingPath = settingDirectory.getAbsolutePath() + "/zineManagerSettings.xml";
 	}
-	/**	Wf	10.10.2023
-	 * 
-	 */
-	private void initDataSetPaths() {
-		String vDataSetDirectoryPath = dataSetDirectory.getAbsolutePath();
-		DataSet vTemp;
-		dataSetFilePaths = new HashMap<Integer, String>();
-		
-		for (String vDataSetFile : dataSetDirectory.list((pDir, pName) -> {return (pName.endsWith(".xml"));} )) {
-			try {
-				vTemp = loadObjectFromXML(vDataSetDirectoryPath + "/" + vDataSetFile, DataSet.class);
-				
-				if (!dataSetFilePaths.containsKey(Integer.valueOf(vTemp.getId())))
-					dataSetFilePaths.put(Integer.valueOf(vTemp.getId()), vDataSetDirectoryPath + "/" + vDataSetFile);
-				else throw new Exception("08; iDSP,DaM");
-			}catch(Exception ex) {LogManager.handleException(ex);}
-		}
-	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @throws Exception
 	 */
 	public void init() throws Exception{
 		systemFile = getFileSystem();
 		
-		dataSetDirectory = new File(systemFile.getAbsolutePath() + dataSetPath);
 		settingDirectory = new File(systemFile.getAbsolutePath() + settingPath);
 		logDirectory     = new File(systemFile.getAbsolutePath() + logPath);
 		
 		initSettingPaths();
-		initDataSetPaths();
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -115,7 +93,7 @@ public class DatabaseManager {
 		
 		return vHomeFile;
 	}
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @param vOS
 	 * @param vHomeFile
@@ -124,7 +102,7 @@ public class DatabaseManager {
 	private void proofFileSystem(String pOS, File pHomeFile) throws Exception {
 		File vTemp;
 		
-		ArrayList<String> vDirectoryPaths = new ArrayList<String>(Arrays.asList( dataSetPath, settingPath, logPath));
+		ArrayList<String> vDirectoryPaths = new ArrayList<String>(Arrays.asList( settingPath, logPath));
 		
 		if (pOS.contains("Windows") || pOS.contains("Linux")) {
 			if (!pHomeFile.exists()) pHomeFile.mkdir();
@@ -135,6 +113,16 @@ public class DatabaseManager {
 				if (!vTemp.exists()) vTemp.mkdir();
 			}
 		} else throw new Exception("20; mFS,DaCon");
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	11.11.2023
+	 * 
+	 * @return
+	 */
+	public String getCurrentDirectoryFilePath() {
+		return new File("").getAbsolutePath();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -168,38 +156,60 @@ public class DatabaseManager {
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pZineManagerSettings
 	 * @throws Exception
 	 */
 	public void saveZineManagerSettings(ZineManagerSettings pZineManagerSettings) throws Exception {
-		saveObjectAsXML(zineManagerSettingPath, pZineManagerSettings);
+		ZineManagerSettings vCloned = pZineManagerSettings.clone();
+		
+		if (!pZineManagerSettings.getCurrentDataSetPath().endsWith(".xml")) vCloned.setCurrentDataSetPath( loadZineManagerSettings().getCurrentDataSetPath() );
+		
+		saveObjectAsXML(zineManagerSettingPath, vCloned);
 	}
 	
 	//-----
 	
-	/**	Wf	10.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pDataSet
 	 * @throws Exception
 	 */
-	public void saveDataSet(DataSet pDataSet) throws Exception {
-		Integer vID;
-		String vTempPath;
+	public void saveDataSet(DataSet pDataSet, String pFilePath) throws Exception {
+		File vDir, vTempFile;
+		File[] vFiles;
+		DataSet vTempDataSet = null;
 		
-		if (pDataSet != null) {
-			vID = Integer.valueOf(pDataSet.getId());
-			vTempPath = dataSetDirectory.getAbsolutePath()+"/" + vID.toString()+"_"+pDataSet.getName()+".xml";
-			
-			if (!dataSetFilePaths.containsKey(vID)) dataSetFilePaths.put(vID, vTempPath);
-			else if (!dataSetFilePaths.get(vID).equals(vTempPath)) {
-				removeFile(dataSetFilePaths.get(vID));
-				dataSetFilePaths.put(vID, vTempPath);
+		if (pFilePath != null) {
+			if (pFilePath.endsWith(".xml")) saveObjectAsXML(pFilePath, pDataSet);
+			else {
+				vDir = new File(pFilePath);
+				vTempFile = null;
+				
+				if (vDir.isDirectory()) {
+					vFiles = vDir.listFiles((pDir, pName) -> {
+						return ((pDir.equals(vDir)) && (pName.endsWith(".xml")));
+					});
+					
+					if (vFiles != null) {
+						for (File pTempFile : vFiles) {
+							if (vTempFile == null) {
+								try{
+									vTempDataSet = loadObjectFromXML(pTempFile.getAbsolutePath(), DataSet.class);
+										
+									if ((vTempDataSet != null) && (vTempDataSet.getId() == pDataSet.getId())) vTempFile = pTempFile;
+								}catch(Exception ex) {}
+							}
+						}
+					}
+					
+					if (vTempFile == null) saveObjectAsXML(vDir.getAbsolutePath()+"/dataset.xml", pDataSet);
+					else saveObjectAsXML(vTempFile.getAbsolutePath(), pDataSet);
+				}else throw new Exception("23; sDS,DaM");
 			}
-			
-			saveObjectAsXML(vTempPath, pDataSet);
-		}else throw new Exception("04; sDS,DaM");
+		} else throw new Exception("04; sDS,DaM");
+		
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -213,71 +223,59 @@ public class DatabaseManager {
 		return loadObjectFromXML(zineManagerSettingPath, ZineManagerSettings.class);
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pID
 	 * @return
 	 * @throws Exception
 	 */
-	public DataSet loadDataSet(int pID) throws Exception{
-		if (dataSetFilePaths.containsKey(Integer.valueOf(pID))) return loadObjectFromXML(dataSetFilePaths.get(Integer.valueOf(pID)), DataSet.class);
-		else throw new Exception("02; lDS,DaM");
-	}
-	/**	Wf	07.10.2023
-	 * 
-	 * @return
-	 * @throws Exception
-	 */
-	public ArrayList<DataSet> loadAllDataSets() throws Exception{
-		ArrayList<DataSet> vRet = new ArrayList<DataSet>();
-		DataSet vTemp;
+	public DataSet loadDataSet(String pFilePath) throws Exception{
+		DataSet vRet = null;
+		File vDir;
+		File[] vFiles;
 		
-		for (String vDataSetPath : dataSetFilePaths.values()) {
-			vTemp = loadObjectFromXML(vDataSetPath, DataSet.class);
-			
-			if (vTemp != null) vRet.add(vTemp);
-		}
+		if (pFilePath != null) {
+			if (pFilePath.endsWith(".xml")) vRet = loadObjectFromXML(pFilePath, DataSet.class);
+			else {
+				vDir = new File(pFilePath);
+				
+				if (vDir.isDirectory()) {
+					vFiles = vDir.listFiles((pDir, pName) -> {
+						return ((pDir.equals(vDir)) && (pName.endsWith(".xml")));
+					});
+					
+					if (vFiles != null) {
+						for (File pTempFile : vFiles) {
+							try {
+								if (vRet == null) vRet = loadObjectFromXML(pTempFile.getAbsolutePath(), DataSet.class);
+							}catch(Exception ex) {} 
+						}
+						
+						if (vRet == null ) throw new NoFileLoadedException("05; lDS,Dam");
+					}
+				}else throw new Exception("23; lDS,DaM");
+			}
+		} else throw new Exception("04; lDS,DaM");
 		
 		return vRet;
 	}
-	
-	//----------------------------------------------------------------------------------------------------
-	
-	/**	Wf	07.10.2023
-	 * 
-	 * @param pDataSet
-	 * @param pFilePath
-	 * @throws Exception
-	 */
-	public void exportDataSet(DataSet pDataSet, String pFilePath) throws Exception{
-		saveObjectAsXML(pFilePath, pDataSet);
-	}
-	
-	/**	Wf	07.10.2023
-	 * 
-	 * @param pFilePath
-	 * @return
-	 * @throws Exception
-	 */
-	public DataSet importDataSet(String pFilePath) throws Exception{
-		return loadObjectFromXML(pFilePath, DataSet.class);
-	}
 		
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
-	 * @param pID
+	 * @param pFilePath
 	 * @throws Exception
 	 */
-	public void removeDataSet(int pID) throws Exception{
-		if (dataSetFilePaths.containsKey(Integer.valueOf(pID))) removeFile(dataSetFilePaths.get(Integer.valueOf(pID)));
-		else throw new Exception("02; lDS,DaM");
+	public void removeDataSet(String pFilePath) throws Exception{
+		LogManager.createLogEntry("Start deleting Dataset");
+		if ((pFilePath != null) && (pFilePath != "")) removeFile(pFilePath);
+		else throw new Exception("04/02; lDS,DaM");
 	}
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pFilePath
 	 * @param pObject
@@ -290,6 +288,7 @@ public class DatabaseManager {
 		
 		if (pObject != null) {
 			if (!pFilePath.equals("")) {
+				LogManager.createLogEntry("Start saving File to: " + pFilePath);
 				vFile = new File(pFilePath);
 				
 				vObjectMapper = new XmlMapper();
@@ -299,10 +298,11 @@ public class DatabaseManager {
 				if (!vFile.exists()) vFile.createNewFile();
 				
 				Files.write(vFile.toPath(), vXMLText.getBytes("UTF-8"));
+				LogManager.createLogEntry("Object saved.");
 			} else throw new Exception("02; sOaXML,DaM");
 		} else throw new Exception("04; sOaXML,DaM");
 	}
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pFilePath
 	 * @param pClass
@@ -318,16 +318,22 @@ public class DatabaseManager {
 		vFile = new File(pFilePath);
 				
 		if (vFile.exists()) {
+			LogManager.createLogEntry("Start Loading File: " + pFilePath);
 			vXMLText = Files.readString(vFile.toPath(), Charset.forName("UTF-8"));  // ISO-8859-1 UTF-8
 			vObjectMapper = new XmlMapper();
 			
-			vRet = vObjectMapper.readValue(vXMLText, pClass);
-		} else throw new Exception("21; lOfXML,DaM");
+			try {
+				vRet = vObjectMapper.readValue(vXMLText, pClass);
+			}catch(Exception ex) { throw new NoFileLoadedException(ex.getMessage()); } 
+			if (vRet == null) throw new NoFileLoadedException("04; lOfXML,DaM");
+			
+			LogManager.createLogEntry("Loading File finished");
+		} else throw new NoFileLoadedException("21; lOfXML,DaM");
 		
 		return vRet;
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pFilePath
 	 * @throws Exception
@@ -336,11 +342,14 @@ public class DatabaseManager {
 		File vTemp;
 		
 		if (pFilePath != null) {
+			LogManager.createLogEntry("Start deleting file: " + pFilePath);
 			vTemp = new File(pFilePath);
 			
 			if ((vTemp != null) && (vTemp.exists())) {
 				if (vTemp.canWrite()) vTemp.delete();
 				else throw new Exception("22; reF,DaM");
+				
+				LogManager.createLogEntry("Deleting File was successfull.");
 			}
 		}
 	}

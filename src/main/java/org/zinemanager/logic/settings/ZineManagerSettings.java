@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	07.10.2023
+/**	ZineManager v0.0	Wf	12.11.2023
  * 
  * 	BasicSetting
  * 	  ZineManagerSettings
@@ -17,20 +17,22 @@
 
 package org.zinemanager.logic.settings;
 
+import java.io.File;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZineManagerSettings extends BasicSetting {
 	@JsonProperty("lastDataSetID")
 	private int lastDataSetID;
-	@JsonProperty("currentDataSetID")
-	private int currentDataSetID;
+	@JsonProperty("currentDataSetPath")
+	private String currentDataSetPath;
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 */
 	public ZineManagerSettings() {
 		lastDataSetID = -1;
-		currentDataSetID = -1;
+		currentDataSetPath = "";
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -43,12 +45,12 @@ public class ZineManagerSettings extends BasicSetting {
 		return lastDataSetID;
 	}
 	
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @return
 	 */
-	public int getCurrentDataSetID() {
-		return currentDataSetID;
+	public String getCurrentDataSetPath() {
+		return currentDataSetPath;
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -63,14 +65,20 @@ public class ZineManagerSettings extends BasicSetting {
 		else throw new Exception("02; sLDSID,ZMS");
 	}
 	
-	/**	Wf	07.10.2032
+	/**	Wf	11.11.2032
 	 * 
 	 * @param pCurrentDataSetID
 	 * @throws Exception
 	 */
-	public void setCurrentDataSetID(int pCurrentDataSetID) throws Exception{
-		if (pCurrentDataSetID >= -1) currentDataSetID = pCurrentDataSetID;
-		else throw new Exception("02; sCDSID,ZMS");
+	public void setCurrentDataSetPath(String pCurrentDataSetPath) throws Exception{
+		File vPathFile;
+		
+		if (pCurrentDataSetPath != null) {
+			vPathFile = new File(pCurrentDataSetPath);
+			
+			if (vPathFile.exists() || pCurrentDataSetPath.equals("")) currentDataSetPath = pCurrentDataSetPath;
+			else throw new Exception("02; sCDSP,ZMS");
+		}else throw new Exception("04; sCDSP,ZMS");
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -80,6 +88,19 @@ public class ZineManagerSettings extends BasicSetting {
 	 */
 	public void increaseLastDataSetID() {
 		lastDataSetID ++;
+	}
+	
+//--------------------------------------------------------------------------------------------------------
+
+	/**	Wf	12.11.2023
+	 * 
+	 */
+	public ZineManagerSettings clone() {
+		ZineManagerSettings vRet = new ZineManagerSettings();
+		vRet.lastDataSetID = this.lastDataSetID;
+		vRet.currentDataSetPath = this.currentDataSetPath;
+		
+		return vRet;
 	}
 	
 }

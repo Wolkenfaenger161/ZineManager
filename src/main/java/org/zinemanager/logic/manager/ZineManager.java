@@ -1,8 +1,8 @@
-/**	ZineManager v0.0	Wf	20.10.2023
+/**	ZineManager v0.0	Wf	12.11.2023
  * 
  * 	logic.manager
- * 	BasicManager
- * 	  ZineManager
+ * 	  BasicManager
+ * 	  	ZineManager
  * 
  * 	Exceptions:
  * 	  01 Wrong length
@@ -27,7 +27,7 @@ import org.zinemanager.logic.entities.DatedCount;
 import org.zinemanager.logic.entities.IDElement;
 import org.zinemanager.logic.entities.ZineElement;
 import org.zinemanager.logic.entities.ZineList;
-import org.zinemanager.logic.exceptions.InvalidZinePathFileException;
+import org.zinemanager.logic.exceptions.NoFileLoadedException;
 
 public class ZineManager extends BasicManager {
 	private SettingManager settingManager;
@@ -35,7 +35,7 @@ public class ZineManager extends BasicManager {
 	
 	private DataSet currentDataSet;
 	
-	/**	Wf	20.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @param pDatabaseManager
 	 * @param pSettingManager
@@ -53,15 +53,7 @@ public class ZineManager extends BasicManager {
 			LogManager.handleException(new Exception("04; ZiM,ZiM"));
 		}
 		
-		
-		try {
-			if (settingManager.getCurrentDataSetID() != -1)	loadDataSet(settingManager.getCurrentDataSetID());
-			else currentDataSet = null;
-		}catch(InvalidZinePathFileException izpfex) {}
-		catch(Exception ex) {
-			currentDataSet = null;
-			LogManager.handleException(ex);
-		}
+		currentDataSet = dataSetManager.getCurrentDataSet();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -79,7 +71,7 @@ public class ZineManager extends BasicManager {
 	 * @return
 	 */
 	public int getCurrentDataSetID() {
-		return (currentDataSet != null) ? currentDataSet.getId() : -1 ;
+		return (currentDataSet != null) ? currentDataSet.getId() : -1;
 	}
 	
 	//-----
@@ -474,6 +466,14 @@ public class ZineManager extends BasicManager {
 		return (currentDataSet != null);
 	}
 	
+	/**	Wf	11.11.2023
+	 * 
+	 * @return
+	 */
+	public boolean hasCurrentDatasetPath() {
+		return !settingManager.getCurrentDataSetPath().equals("");
+	}
+	
 	//-----
 	
 	/**	Wf	03.09.2023
@@ -698,27 +698,88 @@ public class ZineManager extends BasicManager {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	07.10.2023
+	/**	Wf	12.11.2023
 	 * 
-	 * @throws Exception
 	 */
-	public void saveDataSet() throws Exception {
-		dataSetManager.setDataSet(currentDataSet);
+	public void createNewDataset() {
+		dataSetManager.createNewDataset();
+		currentDataSet = dataSetManager.getCurrentDataSet();
 	}
 	
-	/**	Wf	19.10.2023
+	/**	Wf	11.11.2023
 	 * 
-	 * @param pID
 	 * @throws Exception
 	 */
-	public void loadDataSet(int pID) throws Exception {
-		DataSet vTemp = dataSetManager.getDataSet(pID);
+	public void saveDataSet(String pFilePath) throws Exception {
+		if (pFilePath != null) {
+			if (!pFilePath.equals("")) {
+				dataSetManager.exportDataSet(pFilePath);
+				settingManager.setCurrentDataSetPath(pFilePath);
+			}else dataSetManager.saveDataSet();
+		} else throw new Exception("04; sDS,ziM");
+	}
+	/**	Wf	11.11.2023
+	 * 
+	 * @param pFilePath
+	 * @throws Exception
+	 */
+	public void exportDataSet(String pFilePath) throws Exception{
+		if (pFilePath != null) {
+			if (!pFilePath.equals("")) dataSetManager.exportDataSet(pFilePath);
+			else throw new Exception("02; eDS,ZiM");
+		} else throw new Exception("04; eDS,ziM");
+	}
+	
+	//-----
+	
+	/**	Wf	12.11.2023
+	 * 
+	 * @throws Exception
+	 */
+	public void loadDataSet(String pFilePath) throws Exception {
+		DataSet vTemp;
 		
+		if (pFilePath != null) {
+			if (pFilePath.equals("")) dataSetManager.loadDataSet();
+			else dataSetManager.importDataSet(pFilePath);
+				
+			vTemp = dataSetManager.getCurrentDataSet();
+			if (vTemp != null) {
+				currentDataSet = vTemp;
+				
+				vTemp.checkAllZinePathValididies();
+				if (pFilePath != "") settingManager.setCurrentDataSetPath(pFilePath);
+			}else throw new NoFileLoadedException("04; lDS,ZiM");
+		}else throw new Exception("04; lDS,ZiM");
+	}
+	/**	Wf	12.11.2023
+	 * 
+	 * @param pFilePath
+	 * @throws Exception
+	 */
+	public void importDataSet(String pFilePath, boolean pDeletePath) throws Exception{
+		int vOldID;
+		DataSet vTemp;
+		
+		if (currentDataSet != null) vOldID = currentDataSet.getId();
+		else vOldID = -1;
+		
+		dataSetManager.importDataSet(pFilePath);
+		
+		vTemp = dataSetManager.getCurrentDataSet();
 		if (vTemp != null) {
 			currentDataSet = vTemp;
 			
+			if (pDeletePath) {
+				settingManager.setCurrentDataSetPath("");
+				
+				currentDataSet.setId(settingManager.getLastDataSetID());
+				settingManager.setLastDataSetID(settingManager.determineNextDataSetID());
+			}else if (vOldID != -1) currentDataSet.setId(vOldID);
+			else throw new Exception("02; iDs,ZiM");
+			
 			vTemp.checkAllZinePathValididies();
-		}else throw new Exception("04; lDS,ZiM");
+		}else throw new NoFileLoadedException("04; iDS,ZiM");
 	}
 		
 	//----------------------------------------------------------------------------------------------------

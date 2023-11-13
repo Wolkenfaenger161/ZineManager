@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	07.10.2023
+/**	ZineManager v0.0	Wf	11.11.2023
  * 
  * 	logic.manager
  * 	BasicManager
@@ -50,12 +50,12 @@ public class SettingManager extends BasicManager {
 	public int getLastDataSetID() {
 		return zineManagerSettings.getLastDataSetID();
 	}
-	/**	Wf	07.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 * @return
 	 */
-	public int getCurrentDataSetID() {
-		return zineManagerSettings.getCurrentDataSetID();
+	public String getCurrentDataSetPath() {
+		return zineManagerSettings.getCurrentDataSetPath();
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -68,13 +68,13 @@ public class SettingManager extends BasicManager {
 	public void setLastDataSetID(int pLastDataSetID) throws Exception{
 		zineManagerSettings.setLastDataSetID(pLastDataSetID);
 	}
-	/**	Wf	07.20.23
+	/**	Wf	11.11.23
 	 * 
 	 * @param pCurrentDataSetID
 	 * @throws Exception
 	 */
-	public void setCurrentDataSetID(int pCurrentDataSetID) throws Exception {
-		zineManagerSettings.setCurrentDataSetID(pCurrentDataSetID);
+	public void setCurrentDataSetPath(String pCurrentDataSetPath) throws Exception {
+		zineManagerSettings.setCurrentDataSetPath(pCurrentDataSetPath);
 	}
 	
 //--------------------------------------------------------------------------------------------------------

@@ -21,6 +21,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="Datei">
             <items>
+                  <MenuItem fx:id="miNew" mnemonicParsing="false" onAction="#newDataset" text="Neues Dataset" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="miSave" mnemonicParsing="false" onAction="#save" text="Speichern" />
                   <MenuItem fx:id="miLoad" mnemonicParsing="false" onAction="#load" text="Laden" />
                   <SeparatorMenuItem mnemonicParsing="false" />

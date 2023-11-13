@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	01.11.2023
+/**	ZineManager v0.0		Wf	13.11.2023
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -185,11 +185,12 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	
 	//-----
 	
-	/**	Wf	20.10.2023
+	/**	Wf	13.11.2023
 	 * 
 	 */
 	public void update() {
 		tvZineList.refresh();
+		lZineListCount.setText("Anzahl Zines: "+ liZineList.size());
 	}
 	
 //--------------------------------------------------------------------------------------------------------

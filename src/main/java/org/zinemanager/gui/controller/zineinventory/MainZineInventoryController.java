@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	19.10.2023
+/**	ZineManager v0.0		Wf	13.11.2023
  * 	
  * 	gui.controller.zineinventory
  * 	  BasicController
@@ -18,32 +18,25 @@
 
 package org.zinemanager.gui.controller.zineinventory;
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 
-import org.zinemanager.gui.InvalidZinePathCorrector;
-import org.zinemanager.gui.Selector;
+import org.zinemanager.gui.DatasetPorter;
 import org.zinemanager.gui.callables.GUIListElementFormater;
 import org.zinemanager.gui.callables.GUITableElementSetter;
 import org.zinemanager.gui.controller.BasicManagerController;
 import org.zinemanager.gui.controller.ChildController;
 import org.zinemanager.gui.controller.ParentControllerInterface;
 import org.zinemanager.gui.stages.ChildStage;
-import org.zinemanager.gui.stages.datasetmanagment.DataSetSelectorStage;
 import org.zinemanager.gui.stages.zineinventory.MainZineInventoryStage;
 import org.zinemanager.gui.stages.zineinventory.multieditor.MultiCategoryEditorStage;
 import org.zinemanager.gui.stages.zineinventory.multieditor.MultiZineEditorStage;
 import org.zinemanager.gui.stages.zineinventory.singleeditor.SingleZineEditorStage;
 import org.zinemanager.gui.stages.zineinventory.singleeditor.SingleZineListEditorStage;
-import org.zinemanager.gui.tableelements.NameTableElement;
 import org.zinemanager.gui.tableelements.ZineListTableElement;
-import org.zinemanager.logic.exceptions.InvalidZinePathFileException;
-import org.zinemanager.logic.manager.DataSetManager;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZineManager;
 
@@ -58,7 +51,6 @@ import javafx.scene.control.SelectionModel;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.FileChooser;
 
 public class MainZineInventoryController<ParentController extends ParentControllerInterface> 
 			 extends BasicManagerController<ZineManager, ParentController>
@@ -70,7 +62,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	private HashMap<Integer, ZineListTabController> zineListTabController;
 	
 	@FXML
-	private MenuItem miSave, miLoad, miImport, miExport, miBack, miClose,
+	private MenuItem miNew, miSave, miLoad, miImport, miExport, miBack, miClose,
 					 miNewZine, miEditZine, miRemoveZine, miZines,
 					 miNewZinelist, miEditZinelist, miRemoveZinelist,
 					 miOptions, miAbout;
@@ -88,16 +80,20 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		
 	protected ChildStage<? extends ChildController<MainZineInventoryController<ParentController>>, MainZineInventoryController<ParentController>> childStage;
 	
+	protected DatasetPorter datasetPorter;
+	
 	private GUIListElementFormater<ZineListTableElement> pZineListTableElementGenerater;
 	private GUITableElementSetter<ZineListTableElement> pZineListTableElementSetter;
 	
-	/**	Wf	05.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 */
 	public MainZineInventoryController(){
 		super();
 		
 		childStage = null;
+		
+		datasetPorter = null;
 		
 		zineListTabs 		  = new HashMap<Integer, Tab>();
 		zineListTabController = new HashMap<Integer, ZineListTabController>();
@@ -139,6 +135,8 @@ public class MainZineInventoryController<ParentController extends ParentControll
 			
 			ArrayList<Integer> vZineCountIDs = basicManager.getZineCountIDs(vElementID);
 			
+			pTableElement.setName(basicManager.getZineName(vElementID));
+			
 			vTempID 	  = basicManager.getZineCategoryID(vElementID);
 			pTableElement.setCategoryName( vTempID != -1 ? basicManager.getCategoryName(vTempID) : "" ); 
 			
@@ -159,11 +157,13 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	15.10.2023
+	/**	Wf	11.11.2023
 	 * 
 	 */
 	public void setUp(MainZineInventoryStage<ParentController> pStage) {
 		stage = pStage;
+		
+		datasetPorter = new DatasetPorter(basicManager);
 		
 		miOptions.setDisable(true);
 		miAbout.setDisable(true);
@@ -200,11 +200,13 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 	//-----
 	
-	/**	Wf	15.10.2023
+	/**	Wf	13.11.2023
 	 * 
 	 * @param pEnable
 	 */
 	private void setEnabledFileMenuItems(boolean pEnable) {
+		miNew.setDisable( !pEnable );
+		
 		miSave.setDisable( !pEnable );
 		miLoad.setDisable( !pEnable );
 		
@@ -319,110 +321,73 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	12.10.2023
+	/**	Wf	13.11.2023
+	 * 
+	 */
+	@FXML
+	public void newDataset() {
+		basicManager.createNewDataset();
+		try{ updateAll(); }
+		catch(Exception ex) {LogManager.handleException(ex);}
+	}
+	
+	/**	Wf	11.11.2023
 	 * 
 	 */
 	@FXML
 	public void save() {
-		try{ 
-			basicManager.getDataSetManager().saveDataSet(basicManager.getCurrentDataSetID());
-			LogManager.handleMessage("DataSet gespeichert.");
+		try{
+			if (!basicManager.hasCurrentDatasetPath()) {
+				setDisabled();
+				datasetPorter.exportDataset(stage, 0);
+			}else {
+				basicManager.saveDataSet("");
+				LogManager.handleMessage("DataSet gespeichert.");
+			}
 		} catch(Exception ex) {LogManager.handleException(ex);}
+		
+		setEnabled();
 	}
-	/**	Wf	19.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 */
 	@FXML
 	public void load() {
-		childStage = new DataSetSelectorStage<MainZineInventoryController<ParentController>>(basicManager, this);
+		try{
+			setDisabled();
+			
+			datasetPorter.importDataset(stage, 1);
+			updateAll();
+		} catch(Exception ex) {LogManager.handleException(ex);}
 		
-		setDisabled();
+		setEnabled();
 	}
 	
-	/**	Wf	20.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 */
 	@FXML
 	public void importDataSet() {
-		int vDataSetID = -1;
-		int vImportArtSelction = 0;
-		
-		DataSetManager vDataSetManager = basicManager.getDataSetManager(); 
-		
-		File vFile;
-		FileChooser vFileChooser = new FileChooser();
-		
-		Selector vSel = new Selector("Import Auswahl", new ArrayList<>(Arrays.asList(new NameTableElement(0, "Als neu importieren"), new NameTableElement(1, "Ausgewähltes ersetzten"))));
-			
 		setDisabled();
-		vImportArtSelction = vSel.getSelection();
 		
-		if (vImportArtSelction != -1) {
-			vFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-			vFileChooser.setTitle("Wähle Import Datei");
+		try { 
+			datasetPorter.importDataset(stage);
 			
-			vFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("xml", "*.xml"));
-			
-			vFile = vFileChooser.showOpenDialog(stage);
-			
-			if (vFile != null) {
-				try {
-					if (vImportArtSelction == 0) {
-						try {vDataSetID = vDataSetManager.importDataSet(vFile.getAbsolutePath(), -1); }
-						catch(InvalidZinePathFileException izpfex) {
-							InvalidZinePathCorrector vCor = new InvalidZinePathCorrector(basicManager, izpfex.getInvalidFilePathZineIDs());
-							
-							vCor.correctZinePaths();
-						}catch(Exception ex) { throw ex; }
-						basicManager.loadDataSet(vDataSetID);
-						
-						LogManager.handleMessage("Neues DataSet - "+ vDataSetManager.getDataSetName(vDataSetID) +" - importiert und geladen.");
-					}
-					else {
-						try {vDataSetManager.importDataSet(vFile.getAbsolutePath(), basicManager.getCurrentDataSetID()); }
-						catch(InvalidZinePathFileException izpfex) {
-							InvalidZinePathCorrector vCor = new InvalidZinePathCorrector(basicManager, izpfex.getInvalidFilePathZineIDs());
-							
-							vCor.correctZinePaths();
-						}catch(Exception ex) { throw ex; }
-						
-						LogManager.handleMessage("DataSet ersetzt und geladen.");
-					}
-					
-					updateAll();
-				}catch(Exception ex) {LogManager.handleException(ex);}
-			}
-		}
+			updateAll();
+		} catch(Exception ex) {LogManager.handleException(ex);}
+		
 		setEnabled();
 	}
-	/**	Wf	12.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 */
 	@FXML
 	public void exportDataSet() {
-		int vCurDataSetID;
-		File vFile;
-		FileChooser vFileChooser = new FileChooser();
-		DataSetManager vDataSetManager = basicManager.getDataSetManager();
-		
-		vFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		vFileChooser.setTitle("Wähle Export Datei");
-			
-		vFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("xml", "*.xml"));
-			
 		setDisabled();
-		vFile = vFileChooser.showSaveDialog(stage);
-			
-		if (vFile != null) {
-			vCurDataSetID = basicManager.getCurrentDataSetID();
-			try {
-				if (!vFile.getAbsolutePath().contains(".xml")) vFile = new File(vFile.getAbsolutePath()+"/"+vDataSetManager.getDataSetName(vCurDataSetID));
-			
-				vDataSetManager.exportDataSet(vCurDataSetID, vFile.getAbsolutePath());
-				
-				LogManager.handleMessage("Dataset exportiert.");
-			}catch(Exception ex) {LogManager.handleException(ex);}
-		}
+		
+		try { datasetPorter.exportDataset(stage, 1); }
+		catch(Exception ex) {LogManager.handleException(ex);}
+		
 		setEnabled();
 	}
 	
@@ -456,7 +421,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		if ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) {
 			childStage = new SingleZineEditorStage<MainZineInventoryController<ParentController>>(basicManager, this, vController.getSelectionModel().getSelectedItem().getId());
 			setDisabled();
-		}else LogManager.handleMessage("Kein Zine ausgewählt!");
+		}else LogManager.handleMessage("Kein Zine ausgewï¿½hlt!");
 	}
 	/**	Wf	03.10.2023
 	 * 
@@ -471,7 +436,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 				updateAll();
 				LogManager.handleMessage("Zine wurde erfolgreich entfernt.");
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Kein Zine ausgewählt!");
+		}else LogManager.handleMessage("Kein Zine ausgewï¿½hlt!");
 	}
 	
 	/**	Wf	03.10.2023
@@ -492,7 +457,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		if ((vController != null) && (vController.getZineListID() != -1)) {
 			childStage = new SingleZineListEditorStage<MainZineInventoryController<ParentController>>(basicManager, this, vController.getZineListID());
 			setDisabled();
-		}else LogManager.handleMessage("Keine ZineListe ausgewählt!");
+		}else LogManager.handleMessage("Keine ZineListe ausgewï¿½hlt!");
 	}
 	/**	Wf	05.10.2023
 	 * 	
@@ -508,7 +473,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 				updateAll();
 				LogManager.handleMessage("Zineliste wurde erfolgreich entfernt.");
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Keine ZineListe ausgewählt!");
+		}else LogManager.handleMessage("Keine ZineListe ausgewï¿½hlt!");
 	}
 	
 	
@@ -596,17 +561,21 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	20.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @throws Exception
 	 */
 	private void updateZineLists() throws Exception{
 		int vTempID;
 		ArrayList<Integer> vZineListIDs = basicManager.getZineListIDs();
+		ArrayList<Integer> vRemovingZineListIDs = new ArrayList<Integer>();
 		ZineListTabController vController;
 		
 		for (Integer vOldZineListID : zineListTabs.keySet()) {
-			if ((!vZineListIDs.contains(vOldZineListID)) && (vOldZineListID.intValue() != -1)) unregistZineListTab(vOldZineListID.intValue());
+			if ((!vZineListIDs.contains(vOldZineListID)) && (vOldZineListID.intValue() != -1)) vRemovingZineListIDs.add(vOldZineListID);
+		}
+		for (Integer vRemovingZineListID : vRemovingZineListIDs) {
+			unregistZineListTab(vRemovingZineListID.intValue());
 		}
 		
 		for (int i=-1; i < vZineListIDs.size(); i++) {

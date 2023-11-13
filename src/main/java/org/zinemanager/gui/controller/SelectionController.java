@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	15.10.2023
+/**	ZineManager v0.0		Wf	12.11.2023
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -30,6 +30,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseButton;
 
 public class SelectionController extends BasicController {
 	private int selectedID;
@@ -57,7 +58,7 @@ public class SelectionController extends BasicController {
 	
 	//----------------------------------------------------------------------------------------------------
 		
-	/**	Wf	15.10.2023
+	/**	Wf	12.11.2023
 	 * 
 	 * @param pTitle
 	 * @param pSelectionObjects
@@ -74,6 +75,13 @@ public class SelectionController extends BasicController {
 				else selectedID = pNewValue.getId();
 				
 				setEnabled(true);
+			}
+		});
+		lvSelectionObjects.setOnMouseClicked(pEvent -> {
+			if ((pEvent.getButton() == MouseButton.PRIMARY) && (pEvent.getClickCount() == 2) && (lvSelectionObjects.getSelectionModel().getSelectedItem() != null)) {
+				select();
+				
+				pEvent.consume();
 			}
 		});
 		
