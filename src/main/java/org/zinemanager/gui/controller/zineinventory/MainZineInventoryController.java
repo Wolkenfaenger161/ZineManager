@@ -331,7 +331,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		catch(Exception ex) {LogManager.handleException(ex);}
 	}
 	
-	/**	Wf	11.11.2023
+	/**	Wf	14.11.2023
 	 * 
 	 */
 	@FXML
@@ -339,7 +339,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		try{
 			if (!basicManager.hasCurrentDatasetPath()) {
 				setDisabled();
-				datasetPorter.exportDataset(stage, 0);
+				datasetPorter.saveDataset(stage);
 			}else {
 				basicManager.saveDataSet("");
 				LogManager.handleMessage("DataSet gespeichert.");

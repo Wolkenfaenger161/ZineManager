@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	13.11.2023
+/**	ZineManager v0.0		Wf	14.11.2023
  * 	
  * 	gui
  * 	  DatasetPorter
@@ -25,6 +25,7 @@ import org.zinemanager.gui.stages.BasicStage;
 import org.zinemanager.gui.tableelements.NameTableElement;
 import org.zinemanager.logic.exceptions.InvalidZinePathFileException;
 import org.zinemanager.logic.manager.DataSetManager;
+import org.zinemanager.logic.manager.DatabaseManager;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZineManager;
 
@@ -116,46 +117,62 @@ public class DatasetPorter {
 		}
 	}
 	
+	/**	Wf	14.11.2023
+	 * 
+	 * @param pStage
+	 * @throws Exception
+	 */
+	public void saveDataset(BasicStage<? extends BasicController> pStage) throws Exception{
+		Selector vSel = new Selector("Speicherart Auswahl", new ArrayList<>(Arrays.asList(new NameTableElement(0, "Lokal"), new NameTableElement(1, "Extern"))));
+		
+		exportDataset(pStage, vSel.getSelection());
+	}
 	/**	Wf	11.11.2023
 	 * 
 	 * @param pStage
 	 */
 	public void exportDataset(BasicStage<? extends BasicController> pStage) throws Exception {
-		Selector vSel = new Selector("Export Auswahl", new ArrayList<>(Arrays.asList(new NameTableElement(0, "Speichern"), new NameTableElement(1, "Exportieren"))));
+		Selector vSel = new Selector("Export Auswahl", new ArrayList<>(Arrays.asList(new NameTableElement(1, "Speichern"), new NameTableElement(2, "Exportieren"))));
 		
 		importDataset(pStage, vSel.getSelection());
 	}
-	/**	Wf	13.11.2023
+	/**	Wf	14.11.2023
 	 * 
 	 * @param pStage
 	 * @param pExportArt
 	 */
 	public void exportDataset(BasicStage<? extends BasicController> pStage, int pExportArt) throws Exception {
-		File vFile;
+		File vFile = null;
 		FileChooser vFileChooser = new FileChooser();
 		DataSetManager vDataSetManager = zinemanager.getDataSetManager();
 		
-		if ((0 <= pExportArt) && (pExportArt <= 1))
-		vFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		vFileChooser.setTitle("Wähle Dataset Datei");
+		if (pExportArt == 0) {
+			zinemanager.saveDataSet(vDataSetManager.getCurrentDirectoryFilePath());
 			
-		vFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("xml", "*.xml"));
+			LogManager.handleMessage("Dataset gespeichert");
+		} else if ((1 <= pExportArt) && (pExportArt <= 2)) {
+			vFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
+			vFileChooser.setTitle("Wähle Dataset Datei");
 			
-		vFile = vFileChooser.showSaveDialog(pStage);
+			vFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("xml", "*.xml"));
 			
-		if (vFile != null) {
-			if (!vFile.getAbsolutePath().contains(".xml")) vFile = new File(vFile.getAbsolutePath()+"/"+vDataSetManager.getDataSetName());
+			vFile = vFileChooser.showSaveDialog(pStage);
 			
-			if (pExportArt == 0) {
-				zinemanager.saveDataSet(vFile.getAbsolutePath());
-					
-				LogManager.handleMessage("Dataset gespeichert");
-			}else {
-				zinemanager.exportDataSet(vFile.getAbsolutePath());
-					
-				LogManager.handleMessage("Dataset exportiert.");
+			if (vFile != null) {
+				if (!vFile.getAbsolutePath().contains(".xml")) vFile = new File(vFile.getAbsolutePath()+"/"+vDataSetManager.getDataSetName());
+				
+				if (pExportArt == 1) {
+					zinemanager.saveDataSet(vFile.getAbsolutePath());
+						
+					LogManager.handleMessage("Dataset gespeichert");
+				}else {
+					zinemanager.exportDataSet(vFile.getAbsolutePath());
+						
+					LogManager.handleMessage("Dataset exportiert.");
+				}
 			}
 		}
+		
 	}
 	
 //--------------------------------------------------------------------------------------------------------

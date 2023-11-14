@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	11.11.2023
+/**	ZineManager v0.0	Wf	14.11.2023
  * 
  * 	MainManager
  * 
@@ -151,7 +151,7 @@ public class MainManager extends Application {
 
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	13.11.2023
+	/**	Wf	14.11.2023
 	 * 
 	 * @throws Exception
 	 */
@@ -161,7 +161,7 @@ public class MainManager extends Application {
 			else throw new Exception("04; sDsST,MaM");
 		}
 		
-		try { datasetPorter.exportDataset((MainMenuStage)mainStage, 0); }
+		try { datasetPorter.saveDataset((MainMenuStage)mainStage); }
 		catch(NoSuchFileException nsfe) { saveDatasetSavingTry(); }
 		catch(Exception ex) {throw ex;}
 	}

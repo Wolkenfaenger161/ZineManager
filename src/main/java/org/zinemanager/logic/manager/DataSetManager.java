@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	12.11.2023
+/**	ZineManager v0.0	Wf	14.11.2023
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -99,6 +99,14 @@ public class DataSetManager extends BasicManager {
 		return vRet;
 	}
 	
+	/**	Wf	14.11.2023
+	 * 
+	 * @return
+	 */
+	public String getCurrentDirectoryFilePath() {
+		return databaseManager.getCurrentDirectoryFilePath();
+	}
+	
 	//----------------------------------------------------------------------------------------------------
 	
 	/**	Wf	11.11.2023
@@ -157,12 +165,13 @@ public class DataSetManager extends BasicManager {
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	11.11.2023
+	/**	Wf	14.11.2023
 	 * 
 	 * @throws Exception
 	 */
 	public void saveDataSet() throws Exception{
-		exportDataSet(settingManager.getCurrentDataSetPath());
+		if (!settingManager.getCurrentDataSetPath().equals(""))	exportDataSet(settingManager.getCurrentDataSetPath());
+		else exportDataSet(databaseManager.getCurrentDirectoryFilePath());
 	}
 	
 	/**	Wf	13.11.2023
