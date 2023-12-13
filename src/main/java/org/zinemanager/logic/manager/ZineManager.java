@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	12.11.2023
+/**	ZineManager v0.1	Wf	03.12.2023
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -32,10 +32,11 @@ import org.zinemanager.logic.exceptions.NoFileLoadedException;
 public class ZineManager extends BasicManager {
 	private SettingManager settingManager;
 	private DataSetManager dataSetManager;
+	private ZinePrintingManager zinePrintingManager;
 	
 	private DataSet currentDataSet;
 	
-	/**	Wf	11.11.2023
+	/**	Wf	03.12.2023
 	 * 
 	 * @param pDatabaseManager
 	 * @param pSettingManager
@@ -44,11 +45,13 @@ public class ZineManager extends BasicManager {
 		super();
 		
 		if ((pSettingManager != null) && (pDataSetManager != null)) {
-			settingManager = pSettingManager;
-			dataSetManager = pDataSetManager;
+			settingManager      = pSettingManager;
+			dataSetManager      = pDataSetManager;
+			zinePrintingManager = new ZinePrintingManager(pSettingManager);
 		} else {
-			settingManager = null;
-			dataSetManager = null;
+			settingManager 		= null;
+			dataSetManager 		= null;
+			zinePrintingManager = null;
 			
 			LogManager.handleException(new Exception("04; ZiM,ZiM"));
 		}
@@ -64,6 +67,13 @@ public class ZineManager extends BasicManager {
 	 */
 	public DataSetManager getDataSetManager() {
 		return dataSetManager;
+	}
+	/**	Wf	03.12.2023
+	 * 
+	 * @return
+	 */
+	public ZinePrintingManager getZinePrintingManager() {
+		return zinePrintingManager;
 	}
 	
 	/**	Wf	10.10.2023
@@ -637,6 +647,17 @@ public class ZineManager extends BasicManager {
 			else throw new Exception("02; aZIDtZL,ZiM");
 		}
 		else throw new Exception("04; aZIDtZL,ZiM");
+	}
+	
+	//-----
+	
+	/**	Wf	03.12.2023
+	 * 
+	 * @param pZineID
+	 * @throws Exception
+	 */
+	public void addZineToPrintingManager(int pZineID) throws Exception{
+		zinePrintingManager.addPrintingElement(getZine(pZineID));
 	}
 	
 	//----------------------------------------------------------------------------------------------------

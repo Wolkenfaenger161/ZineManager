@@ -44,7 +44,7 @@ public class SingleCategoryEditorController<ParentController extends ParentContr
 	 */
 	public void setUp() throws Exception {
 		if (editObjectID != -1) {
-			btProgress.setText("Ändern");
+			btProgress.setText("Ã„ndern");
 			tfName.setText( basicManager.getCategoryName(editObjectID) );
 		}
 		
@@ -76,7 +76,7 @@ public class SingleCategoryEditorController<ParentController extends ParentContr
 			
 				super.parentController.closeChildStage();
 			} catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Eingabe ungültig!");
+		}else LogManager.handleMessage("Eingabe ungÃ¼ltig!");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

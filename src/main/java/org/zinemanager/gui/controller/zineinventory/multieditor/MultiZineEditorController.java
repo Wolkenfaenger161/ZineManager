@@ -188,7 +188,7 @@ public class MultiZineEditorController<ParentController extends ParentController
 		if (vCurSel != null) {
 			childStage = new SingleZineEditorStage<MultiZineEditorController<ParentController>>(basicManager, this, vCurSel.getId());
 			setDisabled();
-		}else LogManager.handleMessage("Kein Zine ausgew‰hlt.");
+		}else LogManager.handleMessage("Kein Zine ausgew√§hlt.");
 	}
 	
 	/**	Wf	29.09.2023
@@ -205,7 +205,7 @@ public class MultiZineEditorController<ParentController extends ParentController
 				
 				basicManager.removeZine( vCurSel.getId() );
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Kein Zine entfernt!\nEs ist kein Zine ausgew‰hlt.");
+		}else LogManager.handleMessage("Kein Zine entfernt!\nEs ist kein Zine ausgew√§hlt.");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

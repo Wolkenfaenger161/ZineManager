@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	05.10.2023
+/**	ZineManager v0.1		Wf	20.11.2023
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -87,7 +87,7 @@ public abstract class BasicController {
 		return vRet;
 	}
 	
-	/**	Wf	05.10.2023
+	/**	Wf	20.11.2023
 	 * 	
 	 * @param pUpdatedList
 	 * @param pUpdatingIDList
@@ -98,12 +98,26 @@ public abstract class BasicController {
 	 */
 	protected void updateNameTableElementList(ObservableList<NameTableElement> pUpdatedList, ArrayList<Integer> pUpdatingIDList, boolean pWithExtraEmptyElement,
 												NameGetter pNameGetter, SelectionModel<NameTableElement> pSelectionModel) throws Exception{
-		updateGUIList(pUpdatedList, pUpdatingIDList, (pNameElement) -> {pNameElement.setName( pNameGetter.getName(pNameElement.getId()) );},
-														(pID) -> {return new NameTableElement(pID, pNameGetter.getName(pID));},
-														((pWithExtraEmptyElement) ? () -> {return new NameTableElement(-1, "");} : null), pSelectionModel);
+		updateNameTableElementList(pUpdatedList, pUpdatingIDList, ((pWithExtraEmptyElement) ? () -> {return new NameTableElement(-1, "");} : null), pNameGetter, pSelectionModel);
 	}
 	
-	/**	Wf	05.10.2023
+	/**	Wf	20.11.2023
+	 * 
+	 * @param pUpdatedList
+	 * @param pUpdatingIDList
+	 * @param pExtraElement
+	 * @param pNameGetter
+	 * @param pSelectionModel
+	 * @throws Exception
+	 */
+	protected void updateNameTableElementList(ObservableList<NameTableElement> pUpdatedList, ArrayList<Integer> pUpdatingIDList,  EmptyElementCreater<NameTableElement> pExtraElementCreater,
+			NameGetter pNameGetter, SelectionModel<NameTableElement> pSelectionModel) throws Exception{
+		updateGUIList(pUpdatedList, pUpdatingIDList, (pNameElement) -> {pNameElement.setName( pNameGetter.getName(pNameElement.getId()) );},
+					(pID) -> {return new NameTableElement(pID, pNameGetter.getName(pID));},
+					pExtraElementCreater, pSelectionModel);
+}
+	
+	/**	Wf	20.11.2023
 	 * 
 	 * @param <T>
 	 * @param pUpdatedList
@@ -127,7 +141,7 @@ public abstract class BasicController {
 		
 		if (pGUIListElementFormater != null) {
 			for (T vTemp : pUpdatedList) {
-				if (!pUpdatingIDList.contains(Integer.valueOf(vTemp.getId()))) vToRemove.add(vTemp);//pUpdatedList.remove(vTemp); 
+				if (!pUpdatingIDList.contains(Integer.valueOf(vTemp.getId())) && (vTemp.getId() != -1)) vToRemove.add(vTemp);
 
 			}
 			for (T vTemp : vToRemove) {

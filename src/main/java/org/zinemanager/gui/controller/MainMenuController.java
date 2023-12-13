@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	12.11.2023
+/**	ZineManager v0.1		Wf	20.11.2023
  * 	
  * 	gui.controller
  * 	  BasicController		ParentControllerInterface
@@ -23,6 +23,7 @@ import org.zinemanager.gui.DatasetPorter;
 import org.zinemanager.gui.stages.ChildStage;
 import org.zinemanager.gui.stages.MainMenuStage;
 import org.zinemanager.gui.stages.zineinventory.MainZineInventoryStage;
+import org.zinemanager.gui.stages.zineprinting.ZineListSelectionStage;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZineManager;
 
@@ -60,7 +61,7 @@ public class MainMenuController extends BasicController implements ParentControl
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	12.11.2023
+	/**	Wf	20.11.2023
 	 * 
 	 * @param pZineManager
 	 */
@@ -72,11 +73,10 @@ public class MainMenuController extends BasicController implements ParentControl
 		
 		lVersion.setText("v"+LogManager.getVersion());
 		
-		btPrint.setDisable(true);
+		//btPrint.setDisable(true);
 		btOptions.setDisable(true);
 		//-----
-		miPrinter.setDisable(true);
-		//miDataSet.setDisable(true);
+		//miPrinter.setDisable(true);
 		miOptions.setDisable(true);
 		miAbout.setDisable(true);
 		
@@ -113,13 +113,13 @@ public class MainMenuController extends BasicController implements ParentControl
 	
 	//-----
 	
-	/**	Wf	10.10.2023
+	/**	Wf	20.11.2023
 	 * 
 	 * @param pEnable
 	 */
 	private void setUpMenuItems(boolean pEnable) {		
 		miInventory.setDisable(!pEnable);
-		//miPrinter.setDisable(!pEnable);
+		miPrinter.setDisable(!pEnable);
 		miDataSet.setDisable(!pEnable);
 		
 		//miOptions.setDisable(!pEnable);
@@ -127,13 +127,13 @@ public class MainMenuController extends BasicController implements ParentControl
 		
 		miBack.setDisable(!pEnable);
 	}
-	/**	Wf	28.09.2023
+	/**	Wf	20.11.2023
 	 * 
 	 * @param pEnable
 	 */
 	private void setUpButtons(boolean pEnable) {
 		btInventory.setDisable(!pEnable);
-		//btPrint.setDisable(!pEnable);
+		btPrint.setDisable(!pEnable);
 		
 		//btOptions.setDisable(!pEnable);
 		
@@ -160,9 +160,13 @@ public class MainMenuController extends BasicController implements ParentControl
 		setDisabled();
 	}
 	
+	/**	Wf	20.11.2023
+	 * 
+	 */
 	@FXML
 	public void openZinePrinter() {
-		
+		childStage = new ZineListSelectionStage<MainMenuController>(zineManager, this);
+		setDisabled();
 	}
 	
 	/**	Wf	12.11.2023

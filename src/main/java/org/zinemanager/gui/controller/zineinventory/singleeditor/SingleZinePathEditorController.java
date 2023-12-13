@@ -91,7 +91,7 @@ public class SingleZinePathEditorController<ParentController extends ParentContr
 		FileChooser vFileChooser = new FileChooser();
 		
 		vFileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-		vFileChooser.setTitle("Wähle Zine Datei");
+		vFileChooser.setTitle("WÃ¤hle Zine Datei");
 		
 		vFileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("pdf", "*.pdf"));
 		
@@ -122,7 +122,7 @@ public class SingleZinePathEditorController<ParentController extends ParentContr
 				
 				parentController.closeChildStage();
 			} catch(Exception ex) {LogManager.handleException(ex);}
-		} else LogManager.handleMessage("Eingaben nicht gültig!");
+		} else LogManager.handleMessage("Eingaben nicht gÃ¼ltig!");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

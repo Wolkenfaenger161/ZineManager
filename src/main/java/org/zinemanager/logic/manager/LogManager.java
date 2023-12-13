@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	11.10.2023
+/**	ZineManager v0.1	Wf	20.11.2023
  * 
  * 	logic.manager
  * 	LogManager
@@ -23,7 +23,7 @@ import java.time.LocalTime;
 import org.zinemanager.MainManager;
 
 public abstract class LogManager {
-	private static double version = 0.0;
+	private static double version = 0.1;
 	private static String logfile;
 	
 	private static MainManager mainManager;

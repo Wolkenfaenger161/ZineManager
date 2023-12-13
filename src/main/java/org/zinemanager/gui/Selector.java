@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	15.10.2023
+/**	ZineManager v0.1		Wf	08.12.2023
  * 	
  * 	gui
  * 	  Selector
@@ -23,7 +23,7 @@ import org.zinemanager.gui.tableelements.NameTableElement;
 
 public class Selector{
 	private String title;
-	private ArrayList<NameTableElement> selectionObjects;
+	protected ArrayList<NameTableElement> selectionObjects;
 	
 	private SelectionStage selStage;
 	

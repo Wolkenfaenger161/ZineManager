@@ -213,7 +213,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		ZineCountTableElement vCurSel = tvCounts.getSelectionModel().getSelectedItem();
 		
 		if (vCurSel != null) liCounts.remove(vCurSel);
-		else LogManager.handleMessage("Kein Eintrag entfernt!\nEs wurde keiner ausgew�hlt.");
+		else LogManager.handleMessage("Kein Eintrag entfernt!\nEs wurde keiner ausgewählt.");
 	}
 	
 	//---------------------------------------------------------------------------------------------------
@@ -279,7 +279,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 				
 				parentController.closeChildStage();
 			} catch(Exception ex) {LogManager.handleException(ex);}
-		} else LogManager.handleMessage("Eingaben nicht g�ltig!");
+		} else LogManager.handleMessage("Eingaben nicht gültig!");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

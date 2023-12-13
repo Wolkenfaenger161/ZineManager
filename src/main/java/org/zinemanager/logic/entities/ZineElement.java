@@ -86,14 +86,6 @@ public class ZineElement extends NameElement {
 	}
 	
 //--------------------------------------------------------------------------------------------------------
-
-	/**	Wf	03.09.2023
-	 * 
-	 */
-	public void setName(String pName) throws Exception{
-		if ((pName != null) && (!pName.equals(""))) name = pName;
-		else throw new Exception("02; sNa,ZiL");
-	}
 	
 	/**	Wf	01.09.2023
 	 * 
@@ -168,6 +160,14 @@ public class ZineElement extends NameElement {
 	}
 	
 	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	03.09.2023
+	 * 
+	 */
+	public void setName(String pName) throws Exception{
+		if ((pName != null) && (!pName.equals(""))) name = pName;
+		else throw new Exception("02; sNa,ZiL");
+	}
 	
 	/**	Wf	01.09.2023
 	 * 
@@ -358,9 +358,8 @@ public class ZineElement extends NameElement {
 	public ZineElement clone(int pID) throws Exception{
 		ZineElement vRet;
 		
-		if (pID >= -1) {
-			vRet = new ZineElement(pID, name, quota, distributedOffset, categoryID, filePath, getCountsCopy());
-		}else throw new Exception("02; clo,ZiE");
+		if (pID >= -1) vRet = new ZineElement(pID, name, quota, distributedOffset, categoryID, filePath, getCountsCopy());
+		else throw new Exception("02; clo,ZiE");
 		
 		return vRet;
 	}

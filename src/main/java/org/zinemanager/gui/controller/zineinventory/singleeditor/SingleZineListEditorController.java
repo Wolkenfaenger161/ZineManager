@@ -64,8 +64,8 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 	 */
 	public void setUp() {
 		if (editObjectID != -1) {
-			lTitle.setText("Zineliste ändern");
-			btProgress.setText("Ändern");
+			lTitle.setText("Zineliste Ã¤ndern");
+			btProgress.setText("Ã„ndern");
 		}
 		
 		liSelectedZines  = FXCollections.observableArrayList();
@@ -139,7 +139,7 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 		if (vPotSel != null) {
 			liSelectedZines.add(vPotSel);
 			liPotentialZines.remove(vPotSel);
-		} else LogManager.handleMessage("Kein mögliches Zine ausgewählt.");
+		} else LogManager.handleMessage("Kein mÃ¶gliches Zine ausgewÃ¤hlt.");
 	}
 	/**	Wf	03.10.2023
 	 * 
@@ -151,7 +151,7 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 		if (vPotSel != null) {
 			liPotentialZines.add(vPotSel);
 			liSelectedZines.remove(vPotSel);
-		} else LogManager.handleMessage("Kein ausgewähltes Zine ausgewählt.");
+		} else LogManager.handleMessage("Kein ausgewÃ¤hltes Zine ausgewÃ¤hlt.");
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -171,7 +171,7 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 				
 				parentController.closeChildStage();
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Ungültige Eingabe!");
+		}else LogManager.handleMessage("UngÃ¼ltige Eingabe!");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

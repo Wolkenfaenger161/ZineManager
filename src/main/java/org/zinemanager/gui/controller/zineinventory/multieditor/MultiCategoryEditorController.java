@@ -80,7 +80,7 @@ public class MultiCategoryEditorController<ParentController extends ParentContro
 		if (vCurSel != null) {
 			childStage = new SingleCategoryEditorStage<MultiCategoryEditorController<ParentController>>(basicManager, this, vCurSel.getId());
 			setDisabled();
-		} else LogManager.handleMessage("Keine Kategorie ausgew‰hlt.");
+		} else LogManager.handleMessage("Keine Kategorie ausgew√§hlt.");
 	}
 	
 	
@@ -98,7 +98,7 @@ public class MultiCategoryEditorController<ParentController extends ParentContro
 				
 				basicManager.removeCategory(vCurSel.getId());
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Keine Kategorie entfernt!\nEs ist keine Kategorie ausgew‰hlt.");
+		}else LogManager.handleMessage("Keine Kategorie entfernt!\nEs ist keine Kategorie ausgew√§hlt.");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

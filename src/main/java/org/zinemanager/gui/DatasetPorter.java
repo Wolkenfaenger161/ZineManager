@@ -25,7 +25,6 @@ import org.zinemanager.gui.stages.BasicStage;
 import org.zinemanager.gui.tableelements.NameTableElement;
 import org.zinemanager.logic.exceptions.InvalidZinePathFileException;
 import org.zinemanager.logic.manager.DataSetManager;
-import org.zinemanager.logic.manager.DatabaseManager;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZineManager;
 

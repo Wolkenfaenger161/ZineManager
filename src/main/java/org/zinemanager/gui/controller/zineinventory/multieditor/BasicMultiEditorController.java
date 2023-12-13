@@ -83,7 +83,7 @@ public abstract class BasicMultiEditorController<ParentController extends Parent
 	 * 
 	 * @param pEnable
 	 */
-	private void setEnabledButtons(boolean pEnable) {
+	protected void setEnabledButtons(boolean pEnable) {
 		setEnabledProcessButtons(pEnable);
 		
 		btEdit.setDisable( ((lvObjects.getSelectionModel().getSelectedItem() == null) ? true : !pEnable));

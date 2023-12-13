@@ -421,7 +421,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		if ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) {
 			childStage = new SingleZineEditorStage<MainZineInventoryController<ParentController>>(basicManager, this, vController.getSelectionModel().getSelectedItem().getId());
 			setDisabled();
-		}else LogManager.handleMessage("Kein Zine ausgew�hlt!");
+		}else LogManager.handleMessage("Kein Zine ausgewählt!");
 	}
 	/**	Wf	03.10.2023
 	 * 
@@ -436,7 +436,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 				updateAll();
 				LogManager.handleMessage("Zine wurde erfolgreich entfernt.");
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Kein Zine ausgew�hlt!");
+		}else LogManager.handleMessage("Kein Zine ausgewählt!");
 	}
 	
 	/**	Wf	03.10.2023
@@ -457,7 +457,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		if ((vController != null) && (vController.getZineListID() != -1)) {
 			childStage = new SingleZineListEditorStage<MainZineInventoryController<ParentController>>(basicManager, this, vController.getZineListID());
 			setDisabled();
-		}else LogManager.handleMessage("Keine ZineListe ausgew�hlt!");
+		}else LogManager.handleMessage("Keine ZineListe ausgewählt!");
 	}
 	/**	Wf	05.10.2023
 	 * 	
@@ -473,7 +473,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 				updateAll();
 				LogManager.handleMessage("Zineliste wurde erfolgreich entfernt.");
 			}catch(Exception ex) {LogManager.handleException(ex);}
-		}else LogManager.handleMessage("Keine ZineListe ausgew�hlt!");
+		}else LogManager.handleMessage("Keine ZineListe ausgewählt!");
 	}
 	
 	
