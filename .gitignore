@@ -14,3 +14,4 @@ build/gluonfx/x86_64-linux/gvm
 bin/test
 src/test
 /bin/
+/build/
