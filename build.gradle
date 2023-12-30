@@ -4,7 +4,7 @@ plugins {
     id 'com.gluonhq.gluonfx-gradle-plugin' version '1.0.18'
 }
 
-version = '0.0'
+version = '0.1'
 compileJava.options.encoding = 'UTF-8'
 
 repositories {
@@ -55,23 +55,25 @@ gluonfx {
 	//if (System.getProperty("os.name").contains("Linux")) linkerArgs = [ System.getenv('GRAALVM_HOME')+"/lib/static/linux-amd64/glibc/libjaas.a" ]
 	
 	reflectionList = ["org.zinemanager.logic.exceptions.InvalidZinePathFileException",
+					  "org.zinemanager.logic.exceptions.NoFileLoadedException",
 					   //
     				  "org.zinemanager.logic.entities.Category", "org.zinemanager.logic.entities.DataSet", "org.zinemanager.logic.entities.DatedCount",
     				  "org.zinemanager.logic.entities.ZineElement", "org.zinemanager.logic.entities.ZineList",
     				   //
     				  "org.zinemanager.logic.settings.ZineManagerSettings",
 					  //
-					  "org.zinemanager.gui.InvalidZinePathCorrector",  "org.zinemanager.gui.Selector",
+					  "org.zinemanager.gui.InvalidZinePathCorrector", "org.zinemanager.gui.Selector",
+					  "org.zinemanager.gui.DatasetPorter",
+					  "org.zinemanager.gui.Printer", "org.zinemanager.gui.PrinterSelector",
 					  //
 					  "org.zinemanager.gui.controller.MainMenuController",
 					  "org.zinemanager.gui.controller.InfoController",
 					  "org.zinemanager.gui.controller.SelectionController",
-					  "org.zinemanager.gui.controller.datasetmanagment.DataSetEditorController",
-					  "org.zinemanager.gui.controller.datasetmanagment.DataSetSelectorController",
+					  "org.zinemanager.gui.controller.PrinterController",
 					  "org.zinemanager.gui.controller.zineinventory.MainZineInventoryController",
 					  "org.zinemanager.gui.controller.zineinventory.ZineListTabController",
-					   "org.zinemanager.gui.controller.zineinventory.singleeditor.BasicParentEditorController",
-					    "org.zinemanager.gui.controller.zineinventory.singleeditor.BasicSingleEditorController",
+					  "org.zinemanager.gui.controller.zineinventory.singleeditor.BasicParentEditorController",
+					  "org.zinemanager.gui.controller.zineinventory.singleeditor.BasicSingleEditorController",
 					  "org.zinemanager.gui.controller.zineinventory.singleeditor.SingleCategoryEditorController",
 					  "org.zinemanager.gui.controller.zineinventory.singleeditor.SingleZineEditorController",
 					  "org.zinemanager.gui.controller.zineinventory.singleeditor.SingleZineListEditorController",
@@ -79,16 +81,22 @@ gluonfx {
 					  "org.zinemanager.gui.controller.zineinventory.multieditor.BasicMultiEditorController",
 					  "org.zinemanager.gui.controller.zineinventory.multieditor.MultiCategoryEditorController",
 					  "org.zinemanager.gui.controller.zineinventory.multieditor.MultiZineEditorController",
+					  "org.zinemanager.gui.controller.zineprinting.ZineListSelectionController",
+					  "org.zinemanager.gui.controller.zineprinting.ZineNumberSelectionController",
+					  "org.zinemanager.gui.controller.zineprinting.ZinePrintSelectionController",
     				  //
     				  "org.zinemanager.gui.tableelements.NameTableElement", "org.zinemanager.gui.tableelements.ZineCountTableElement",
-    				  "org.zinemanager.gui.tableelements.ZineListTableElement",
+    				  "org.zinemanager.gui.tableelements.ZineListTableElement","org.zinemanager.gui.tableelements.ZinePrintNumberTableElement",
     				  //
     				  "javafx.scene.control.ChoiceBox", "javafx.scene.control.Spinner", "javafx.scene.control.CheckBox", "javafx.scene.control.MenuItem",
     				  "javafx.scene.control.Menu", "javafx.scene.control.MenuBar", "javafx.scene.control.SeparatorMenuItem",	//  , "javafx.scene.control.RadioMenuItem"
     				  "javafx.scene.control.SplitPane", "javafx.scene.control.Separator", "javafx.scene.control.TableView", "javafx.scene.control.TableColumn",
     				  "javafx.scene.control.Tab", "javafx.scene.control.TitledPane", "javafx.scene.control.ListView", // "javafx.scene.control.PasswordField",
-    				  "javafx.scene.layout.VBox", "javafx.scene.layout.HBox", "javafx.scene.control.DatePicker",
-    				  "javafx.scene.input.KeyCode"//, 
+    				  "javafx.scene.layout.VBox", "javafx.scene.layout.HBox", "javafx.scene.control.DatePicker","javafx.scene.control.ProgressBar",
+    				  "javafx.scene.input.KeyCode",//,
+    				  //
+    				  //"java.awt.print.Book", "java.awt.print.PageFormat", "java.awt.print.Paper", "java.awt.print.PrinterJob"
+    				  //"sun.awt.X11.XWrapperBase"
     				  //"jakarta.persistence.EntityManager", "jakarta.persistence.EntityManagerFactory", "jakarta.persistence.Persistence"
     				  ]
 }

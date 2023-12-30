@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	03.12.2023
+/**	ZineManager v0.1	Wf	18.12.2023
  * 
  * 	MainManager
  * 
@@ -45,12 +45,14 @@ public class MainManager extends Application {
 	
 	private ArrayList<InfoStage> infoStages;
 	
-	/**	Wf	21.08.2023
+	/**	Wf	18.12.2023
 	 * 
 	 * @param args
 	 */
 	public static void main(String[] args) {
 		launch(args);
+		
+		System.setProperty("java.awt.headless", "true");
 	}
 
 	/**	Wf	03.12.2023

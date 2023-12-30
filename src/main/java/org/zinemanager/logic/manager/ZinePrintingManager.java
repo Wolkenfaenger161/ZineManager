@@ -18,7 +18,6 @@
 
 package org.zinemanager.logic.manager;
 
-import java.awt.PageAttributes;
 import java.awt.print.Book;
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -35,10 +34,8 @@ import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
 import javax.print.attribute.standard.OrientationRequested;
-import javax.print.attribute.standard.PageRanges;
 import javax.print.attribute.standard.PrinterIsAcceptingJobs;
 import javax.print.attribute.standard.QueuedJobCount;
-import javax.print.attribute.standard.Sides;
 import javax.print.event.PrintServiceAttributeEvent;
 import javax.print.event.PrintServiceAttributeListener;
 
@@ -367,7 +364,7 @@ public class ZinePrintingManager extends BasicManager {
 	 * @throws Exception
 	 */
 	public void printElement(int pID) throws Exception {
-		PrintingElement vPrintingElement;
+		/*PrintingElement vPrintingElement;
 		
 		Paper vPaperA4 = new Paper();
 		Paper vPaperA5 = new Paper();
@@ -413,22 +410,23 @@ public class ZinePrintingManager extends BasicManager {
 				
 				//printJob.setPageable(vPDFPageable);
 				printJob.setPageable(vBook);
-				printJob.print(vPrintAttributes);
+				//printJob.print(vPrintAttributes);
+				printJob.print();
 				
 				isPrinting = true;
 			}
-		}else throw new Exception("04; prE, ZPM");
+		}else throw new Exception("04; prE, ZPM");*/
 	}
 	
 	/**	Wf	12.12.2023
 	 * 
 	 */
 	public void canclePrinting() {
-		printJob.cancel();
-		isPrinting = false;
+		/*printJob.cancel();
+		isPrinting = false;*/
 	}
 	
-	public void printZines() throws Exception{
+	/*public void printZines() throws Exception{
 		PDDocument vDocument;
 		PDFPageable vPDFPageable;
 		SimpleDoc vDoc;
@@ -453,7 +451,7 @@ public class ZinePrintingManager extends BasicManager {
 					}*/
 					
 					//vPrintAttributes.add(new Copies(vPrintingElement.getPrinting()));
-					LogManager.handleMessage("3");
+					/*LogManager.handleMessage("3");
 					//printJob.print(vDoc, vPrintAttributes);
 					vDocument.close();
 					
@@ -463,12 +461,12 @@ public class ZinePrintingManager extends BasicManager {
 					vPJob.setPageable(new PDFPageable(vDocument));
 					
 					vPJob.print(vPrintAttributes);*/
-				}
+				/*}/*
 			}
 			LogManager.handleMessage("Finished Printing");
 		} else throw new Exception("05; pZi,ZPM");
 		
-	}
+	}*/
 
 //--------------------------------------------------------------------------------------------------------
 	
