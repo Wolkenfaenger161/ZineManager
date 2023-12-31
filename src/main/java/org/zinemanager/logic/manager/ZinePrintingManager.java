@@ -26,10 +26,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.print.DocFlavor;
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
-import javax.print.SimpleDoc;
 import javax.print.attribute.HashPrintRequestAttributeSet;
 import javax.print.attribute.PrintRequestAttributeSet;
 import javax.print.attribute.PrintServiceAttributeSet;
@@ -42,7 +40,6 @@ import javax.print.event.PrintServiceAttributeListener;
 import org.apache.pdfbox.Loader;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.printing.PDFPageable;
 import org.apache.pdfbox.printing.PDFPrintable;
 import org.apache.pdfbox.printing.Scaling;
 import org.zinemanager.gui.callables.printing.JobCanceledCallable;
@@ -364,7 +361,7 @@ public class ZinePrintingManager extends BasicManager {
 	 * @throws Exception
 	 */
 	public void printElement(int pID) throws Exception {
-		/*PrintingElement vPrintingElement;
+		PrintingElement vPrintingElement;
 		
 		Paper vPaperA4 = new Paper();
 		Paper vPaperA5 = new Paper();
@@ -375,7 +372,7 @@ public class ZinePrintingManager extends BasicManager {
 		PDDocument vDocument;
 		Book vBook;
 		//PDFPageable vPDFPageable;
-		PDFPrintable vPDFPrintable;
+		//PDFPrintable vPDFPrintable;
 		PageFormat vPageFormat;
 		PrintRequestAttributeSet vPrintAttributes = new HashPrintRequestAttributeSet();
 		vPrintAttributes.addAll(basicPrintAttributes);
@@ -415,19 +412,19 @@ public class ZinePrintingManager extends BasicManager {
 				
 				isPrinting = true;
 			}
-		}else throw new Exception("04; prE, ZPM");*/
+		}else throw new Exception("04; prE, ZPM");
 	}
 	
 	/**	Wf	12.12.2023
 	 * 
 	 */
 	public void canclePrinting() {
-		/*printJob.cancel();
-		isPrinting = false;*/
+		printJob.cancel();
+		isPrinting = false;
 	}
 	
-	/*public void printZines() throws Exception{
-		PDDocument vDocument;
+	public void printZines() throws Exception{
+		/*PDDocument vDocument;
 		PDFPageable vPDFPageable;
 		SimpleDoc vDoc;
 		PrintRequestAttributeSet vPrintAttributes = new HashPrintRequestAttributeSet();
@@ -444,29 +441,29 @@ public class ZinePrintingManager extends BasicManager {
 					vPDFPageable = new PDFPageable(vDocument);
 					vDoc = new SimpleDoc(vPDFPageable, DocFlavor.SERVICE_FORMATTED.PAGEABLE, null);
 					LogManager.handleMessage("2");
-					/*if (areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A4)) {
+					if (areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A4)) {
 						vPrintAttributes.add(OrientationRequested.PORTRAIT);
 					}else if(areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A5)) {
 						vPrintAttributes.add(OrientationRequested.LANDSCAPE);
-					}*/
+					}
 					
 					//vPrintAttributes.add(new Copies(vPrintingElement.getPrinting()));
-					/*LogManager.handleMessage("3");
+					LogManager.handleMessage("3");
 					//printJob.print(vDoc, vPrintAttributes);
 					vDocument.close();
 					
 					//printJob.getPrintService().
-					LogManager.handleMessage("4");
+					LogManager.handleMessage("4");*/
 					/*vPJob.setCopies(vPrintingElement.getPrinting());
 					vPJob.setPageable(new PDFPageable(vDocument));
 					
-					vPJob.print(vPrintAttributes);*/
-				/*}/*
+					vPJob.print(vPrintAttributes);*//*
+				}
 			}
 			LogManager.handleMessage("Finished Printing");
-		} else throw new Exception("05; pZi,ZPM");
+		} else throw new Exception("05; pZi,ZPM");*/
 		
-	}*/
+	}
 
 //--------------------------------------------------------------------------------------------------------
 	

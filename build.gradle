@@ -58,7 +58,7 @@ gluonfx {
 					  "org.zinemanager.logic.exceptions.NoFileLoadedException",
 					   //
     				  "org.zinemanager.logic.entities.Category", "org.zinemanager.logic.entities.DataSet", "org.zinemanager.logic.entities.DatedCount",
-    				  "org.zinemanager.logic.entities.ZineElement", "org.zinemanager.logic.entities.ZineList",
+    				  "org.zinemanager.logic.entities.PrintingElement", "org.zinemanager.logic.entities.ZineElement", "org.zinemanager.logic.entities.ZineList",
     				   //
     				  "org.zinemanager.logic.settings.ZineManagerSettings",
 					  //
@@ -95,6 +95,8 @@ gluonfx {
     				  "javafx.scene.layout.VBox", "javafx.scene.layout.HBox", "javafx.scene.control.DatePicker","javafx.scene.control.ProgressBar",
     				  "javafx.scene.input.KeyCode",//,
     				  //
+    				  "org.apache.pdfbox.Loader", "org.apache.pdfbox.pdmodel.PDDocument", "org.apache.pdfbox.pdmodel.common.PDRectangle",
+    				  "org.apache.pdfbox.printing.PDFPrintable", "org.apache.pdfbox.printing.Scaling"
     				  //"java.awt.print.Book", "java.awt.print.PageFormat", "java.awt.print.Paper", "java.awt.print.PrinterJob"
     				  //"sun.awt.X11.XWrapperBase"
     				  //"jakarta.persistence.EntityManager", "jakarta.persistence.EntityManagerFactory", "jakarta.persistence.Persistence"
