@@ -309,6 +309,7 @@ public class ZinePrintingManager extends BasicManager {
 	public<PS extends PrinterSelectorInterface> boolean settingUpPrinting(PS pPrintselector) throws Exception {
 		//basicPrintAttributes.add(new PageRanges(1, 1));
 		//basicPrintAttributes.add(new Copies(20));
+		printJob = PrinterJob.getPrinterJob();
 		
 		pPrintselector.setPrintServiceSelection( PrintServiceLookup.lookupPrintServices(null, basicPrintAttributes) );
 		
