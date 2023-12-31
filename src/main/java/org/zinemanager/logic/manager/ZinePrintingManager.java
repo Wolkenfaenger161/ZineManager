@@ -71,8 +71,9 @@ public class ZinePrintingManager extends BasicManager {
 		isPrinting = false;
 		
 		settingManager = pSettingManager;
-		LogManager.createLogEntry("Initer Printer Stuff");
+		LogManager.createLogEntry("Init Printer Stuff");
 		printJob		 	 = PrinterJob.getPrinterJob();
+		LogManager.createLogEntry("Init Printer Stuff II");
 		basicPrintAttributes = new HashPrintRequestAttributeSet();
 		LogManager.createLogEntry("Init PrinterElements");
 		printingElements = new ArrayList<PrintingElement>();
