@@ -58,7 +58,7 @@ public class ZineManager extends BasicManager {
 			
 			LogManager.handleException(new Exception("04; ZiM,ZiM"));
 		}
-		
+		LogManager.createLogEntry("Finished Init ZinePrintingManager");
 		currentDataSet = dataSetManager.getCurrentDataSet();
 	}
 	
