@@ -100,8 +100,8 @@ gluonfx {
     				  //
     				  "javax.print.PrintServic", "javax.print.PrintServiceLookup", "javax.print.attribute.HashPrintRequestAttributeSet", "javax.print.attribute.PrintRequestAttributeSet",
     				  "javax.print.attribute.PrintServiceAttributeSet", "javax.print.attribute.standard.OrientationRequested", "javax.print.attribute.standard.PrinterIsAcceptingJobs",
-    				  "javax.print.attribute.standard.QueuedJobCount", "javax.print.event.PrintServiceAttributeEvent", "javax.print.event.PrintServiceAttributeListener"
-    				  //"java.awt.print.Book", "java.awt.print.PageFormat", "java.awt.print.Paper", "java.awt.print.PrinterJob"
+    				  "javax.print.attribute.standard.QueuedJobCount", "javax.print.event.PrintServiceAttributeEvent", "javax.print.event.PrintServiceAttributeListener",
+    				  "java.awt.print.Book", "java.awt.print.PageFormat", "java.awt.print.Paper", "java.awt.print.PrinterJob"
     				  //"sun.awt.X11.XWrapperBase"
     				  //"jakarta.persistence.EntityManager", "jakarta.persistence.EntityManagerFactory", "jakarta.persistence.Persistence"
     				  ]
