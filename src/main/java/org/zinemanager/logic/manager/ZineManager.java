@@ -43,11 +43,14 @@ public class ZineManager extends BasicManager {
 	 */
 	public ZineManager(SettingManager pSettingManager, DataSetManager pDataSetManager) {
 		super();
-		
+		LogManager.createLogEntry("Start Init ZineManager");
 		if ((pSettingManager != null) && (pDataSetManager != null)) {
 			settingManager      = pSettingManager;
 			dataSetManager      = pDataSetManager;
-			zinePrintingManager = new ZinePrintingManager(pSettingManager);
+			LogManager.createLogEntry("Start Init ZinePrintingManager");
+			try {
+				zinePrintingManager = new ZinePrintingManager(pSettingManager);
+			}catch(Exception ex) {LogManager.handleException(ex);}
 		} else {
 			settingManager 		= null;
 			dataSetManager 		= null;
