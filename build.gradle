@@ -23,6 +23,8 @@ dependencies {
 	implementation 'javax.xml.stream:stax-api:1.0-2'
 	
 	implementation 'org.apache.pdfbox:pdfbox:3.0.1'
+	//implementation 'io.quarkus:quarkus-awt:3.6.4'
+	//implementation 'org.netbeans.api:org-openide-awt:RELEASE200'
 	
 	testImplementation('org.junit.jupiter:junit-jupiter:5.9.2')	
 }
@@ -53,6 +55,8 @@ gluonfx {
     }
 
 	//if (System.getProperty("os.name").contains("Linux")) linkerArgs = [ System.getenv('GRAALVM_HOME')+"/lib/static/linux-amd64/glibc/libjaas.a" ]
+	compilerArgs = [ "-Djava.awt.headless=true" ]
+	runtimeArgs = [ "--report-unsupported-elements-at-runtime" ]
 	
 	reflectionList = ["org.zinemanager.logic.exceptions.InvalidZinePathFileException",
 					  "org.zinemanager.logic.exceptions.NoFileLoadedException",
@@ -93,7 +97,7 @@ gluonfx {
     				  "javafx.scene.control.SplitPane", "javafx.scene.control.Separator", "javafx.scene.control.TableView", "javafx.scene.control.TableColumn",
     				  "javafx.scene.control.Tab", "javafx.scene.control.TitledPane", "javafx.scene.control.ListView", // "javafx.scene.control.PasswordField",
     				  "javafx.scene.layout.VBox", "javafx.scene.layout.HBox", "javafx.scene.control.DatePicker","javafx.scene.control.ProgressBar",
-    				  "javafx.scene.input.KeyCode",
+    				  "javafx.scene.input.KeyCode"//,
     				  //
     				  /*"org.apache.pdfbox.Loader", "org.apache.pdfbox.pdmodel.PDDocument", "org.apache.pdfbox.pdmodel.common.PDRectangle",
     				  "org.apache.pdfbox.printing.PDFPrintable", "org.apache.pdfbox.printing.Scaling",
@@ -102,7 +106,7 @@ gluonfx {
     				  "javax.print.attribute.PrintServiceAttributeSet", "javax.print.attribute.standard.OrientationRequested", "javax.print.attribute.standard.PrinterIsAcceptingJobs",
     				  "javax.print.attribute.standard.QueuedJobCount", "javax.print.event.PrintServiceAttributeEvent", "javax.print.event.PrintServiceAttributeListener",
     				  "java.awt.print.Book", "java.awt.print.PageFormat", "java.awt.print.Paper", "java.awt.print.PrinterJob",
-    				  */"sun.print.PlatformPrinterJobProxy", "sun.awt.windows.WPrinterJob"
+    				  *///"sun.print.PlatformPrinterJobProxy", "sun.awt.windows.WPrinterJob"
     				  //"sun.awt.X11.XWrapperBase"
     				  //"jakarta.persistence.EntityManager", "jakarta.persistence.EntityManagerFactory", "jakarta.persistence.Persistence"
     				  ]

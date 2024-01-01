@@ -39,7 +39,7 @@ public class PrinterSelector extends Selector implements PrinterSelectorInterfac
 	 * 
 	 * @return
 	 */
-	//public static PrinterSelectorInterface getPrinterSelector(PrintService[] pPrintServices) {return new PrinterSelector();}
+	public static PrinterSelectorInterface getPrinterSelector(PrintService[] pPrintServices) {return new PrinterSelector();}
 	
 //--------------------------------------------------------------------------------------------------------
 

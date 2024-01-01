@@ -73,7 +73,7 @@ public class ZinePrintingManager extends BasicManager {
 		settingManager = pSettingManager;
 		LogManager.createLogEntry("Init Printer Stuff");
 		try {
-			//printJob		 	 = PrinterJob.getPrinterJob();
+			printJob		 	 = PrinterJob.getPrinterJob();
 		}catch(Exception ex) {LogManager.handleException(ex);}
 		LogManager.createLogEntry("Init Printer Stuff II");
 		basicPrintAttributes = new HashPrintRequestAttributeSet();
@@ -309,12 +309,12 @@ public class ZinePrintingManager extends BasicManager {
 	public<PS extends PrinterSelectorInterface> boolean settingUpPrinting(PS pPrintselector) throws Exception {
 		//basicPrintAttributes.add(new PageRanges(1, 1));
 		//basicPrintAttributes.add(new Copies(20));
-		printJob = PrinterJob.getPrinterJob();
+		//printJob = PrinterJob.getPrinterJob();
 		
-		pPrintselector.setPrintServiceSelection( PrintServiceLookup.lookupPrintServices(null, basicPrintAttributes) );
+		//pPrintselector.setPrintServiceSelection( PrintServiceLookup.lookupPrintServices(null, basicPrintAttributes) );
 		
-		printservices = pPrintselector.getPrintServiceSelection();
-		printJob.setPrintService(printservices);
+		//printservices = pPrintselector.getPrintServiceSelection();
+		//printJob.setPrintService(printservices);*/
 		
 		return printservices != null;
 	}
@@ -327,7 +327,7 @@ public class ZinePrintingManager extends BasicManager {
 	 * @param pJobCanceledCallable
 	 */
 	public void initiatePrinterListener(JobCompletedCallable pJobCompletedCallable, JobCanceledCallable pJobFailedCallable) {
-		printservices.addPrintServiceAttributeListener(new PrintServiceAttributeListener() {
+		/*printservices.addPrintServiceAttributeListener(new PrintServiceAttributeListener() {
 			private int lastqueuedjobcount = 0;
 			
 			@Override
@@ -356,7 +356,7 @@ public class ZinePrintingManager extends BasicManager {
 					}
 				});
 			}
-		});
+		});*/
 	}
 	
 	/**	Wf	12.12.2023
@@ -365,7 +365,7 @@ public class ZinePrintingManager extends BasicManager {
 	 * @throws Exception
 	 */
 	public void printElement(int pID) throws Exception {
-		PrintingElement vPrintingElement;
+		/*PrintingElement vPrintingElement;
 		
 		Paper vPaperA4 = new Paper();
 		Paper vPaperA5 = new Paper();
@@ -416,14 +416,14 @@ public class ZinePrintingManager extends BasicManager {
 				
 				isPrinting = true;
 			}
-		}else throw new Exception("04; prE, ZPM");
+		}else throw new Exception("04; prE, ZPM");*/
 	}
 	
 	/**	Wf	12.12.2023
 	 * 
 	 */
 	public void canclePrinting() {
-		printJob.cancel();
+		//printJob.cancel();
 		isPrinting = false;
 	}
 	
