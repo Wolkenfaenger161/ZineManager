@@ -231,6 +231,8 @@ public class PrinterController extends BasicController {
 			if ((curPrintElementIndx < (liZinePrintingIDs.size()-1)) || (repeatingCurrent)) {
 				if (isPrinting)	startNextPrint();
 			}else{
+				isPrinting = false;
+				
 				if ((printStatus == 2) || ((printStatus == 3) && (!isDuplex))) {
 					curPrintElementIndx = -1;
 					
@@ -239,7 +241,6 @@ public class PrinterController extends BasicController {
 					
 					if (isPrinting) startNextPrint();
 				}else {
-					isPrinting = false;
 					printStatus = 5;
 					
 					setEnabled(true);
