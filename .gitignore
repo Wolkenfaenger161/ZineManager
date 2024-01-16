@@ -18,3 +18,4 @@ bin/test
 src/test
 /bin/
 
+/build/

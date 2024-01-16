@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	03.12.2023
+/**	ZineManager v0.1	Wf	16.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -20,14 +20,18 @@
 package org.zinemanager.logic.entities;
 
 public class PrintingElement extends NameElement {
+	protected boolean coverprint, finishedprinting;
 	protected int quota, current, printing;
 	protected String filePath;
 	
-	/**	Wf	03.12.2023
+	/**	Wf	16.01.2024
 	 * 
 	 */
 	public PrintingElement() {
 		super();
+		
+		coverprint 		 = false;
+		finishedprinting = false;
 		
 		quota    = -1;
 		current  = -1;
@@ -36,7 +40,7 @@ public class PrintingElement extends NameElement {
 		filePath = "";
 	}
 	
-	/**	Wf	03.12.2023
+	/**	Wf	16.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
@@ -46,7 +50,7 @@ public class PrintingElement extends NameElement {
 	public PrintingElement(int pID, String pName, String pFilePath, int pPrinting) {
 		this(pID, pName, pFilePath, -1, -1, pPrinting);
 	}
-	/**	Wf	03.12.2023
+	/**	Wf	16.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
@@ -56,7 +60,23 @@ public class PrintingElement extends NameElement {
 	 * @param pPrinting
 	 */
 	public PrintingElement(int pID, String pName, String pFilePath, int pQuota, int pCurrent, int pPrinting) {
+		this(pID, pName, pFilePath, pQuota, pCurrent, pPrinting, true);
+	}
+	/**	Wf	16.01.2024
+	 * 
+	 * @param pID
+	 * @param pName
+	 * @param pFilePath
+	 * @param pQuota
+	 * @param pCurrent
+	 * @param pPrinting
+	 * @param pIsCoverPrint
+	 */
+	public PrintingElement(int pID, String pName, String pFilePath, int pQuota, int pCurrent, int pPrinting, boolean pIsCoverPrint) {
 		super(pID, pName);
+		
+		coverprint 		 = pIsCoverPrint;
+		finishedprinting = false;
 		
 		quota    = pQuota;
 		current  = pCurrent;
@@ -66,6 +86,21 @@ public class PrintingElement extends NameElement {
 	}
 	
 //--------------------------------------------------------------------------------------------------------
+	
+	/**	Wf	16.01.2024
+	 * 
+	 * @return
+	 */
+	public boolean isCoverprint() {
+		return coverprint;
+	}
+	/**	Wf	16.01.2024
+	 * 
+	 * @return
+	 */
+	public boolean isFinishedprinting() {
+		return finishedprinting;
+	}
 	
 	/**	Wf	03.12.2023
 	 * 
@@ -98,6 +133,21 @@ public class PrintingElement extends NameElement {
 	}
 	
 	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	16.01.2024
+	 * 
+	 * @param pIsCoverprint
+	 */
+	public void setCoverprint(boolean pIsCoverprint) {
+		coverprint = pIsCoverprint;
+	}
+	/**	Wf	16.01.2024	
+	 * 
+	 * @param pHasFinishedPrinting
+	 */
+	public void setFinishedPrinting(boolean pHasFinishedPrinting) {
+		finishedprinting = pHasFinishedPrinting;
+	}
 	
 	/**	Wf	03.12.2023
 	 * 
@@ -139,13 +189,13 @@ public class PrintingElement extends NameElement {
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	03.12.2023
+	/**	Wf	16.01.2024
 	 * 
 	 */
 	public PrintingElement clone(int pID) throws Exception{
 		PrintingElement vRet;
 		
-		if (pID >= -1) vRet = new PrintingElement(pID, name, filePath, quota, current, printing);
+		if (pID >= -1) vRet = new PrintingElement(pID, name, filePath, quota, current, printing, coverprint);
 		else throw new Exception("02; clo,PrE");
 		
 		return vRet;
