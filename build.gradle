@@ -14,7 +14,8 @@ repositories {
     }
 }
 
-mainClassName = 'org.zinemanager.MainManager'
+//mainClassName = 'org.zinemanager.MainManager'
+mainClassName = 'org.zinemanager.Starter'
 
 dependencies {
     implementation 'com.gluonhq:charm:6.2.2'

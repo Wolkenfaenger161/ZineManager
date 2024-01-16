@@ -4,8 +4,11 @@
 *.xml
 
 build/classes
+build/distributions/*
+!build/distributions/*.???
 build/generated
 build/resources
+build/scripts
 build/tmp
 build/gluonfx/log
 build/gluonfx/x86_64-linux/gensrc
@@ -14,4 +17,4 @@ build/gluonfx/x86_64-linux/gvm
 bin/test
 src/test
 /bin/
-/build/
+
