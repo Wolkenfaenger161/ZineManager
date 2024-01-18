@@ -22,6 +22,10 @@
 
 package org.zinemanager.gui.controller.zineprinting;
 
+import java.time.LocalDate;
+import java.time.ZoneOffset;
+import java.util.Date;
+
 import org.zinemanager.gui.controller.ParentControllerInterface;
 import org.zinemanager.gui.controller.zineinventory.multieditor.BasicMultiEditorController;
 import org.zinemanager.gui.stages.zineprinting.ZineNumberSelectionStage;
@@ -70,6 +74,23 @@ public class ZinePrintSelectionController<ParentController extends ParentControl
 		else throw new Exception("02; sSZLID,ZPSC");
 		
 		updateAll();
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	18.01.2024
+	 * 
+	 */
+	public void closeChildStage() {
+		if (basicManager.getZinePrintingManager().getPrintingElementIDs().size() > 0) {
+			try {
+				basicManager.updatePrintedZineCounts(Date.from( LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
+			}catch(Exception ex) {LogManager.handleException(ex);}
+			
+			basicManager.getZinePrintingManager().clearPrintingElements();
+		}
+		
+		super.closeChildStage();
 	}
 	
 //--------------------------------------------------------------------------------------------------------

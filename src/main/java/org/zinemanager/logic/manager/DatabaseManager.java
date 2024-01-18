@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	13.11.2023
+/**	ZineManager v0.1	Wf	18.01.2024
  * 
  * 	logic.manager
  * 	  DatabaseManager
@@ -31,6 +31,7 @@ import java.util.Arrays;
 
 import org.zinemanager.logic.entities.DataSet;
 import org.zinemanager.logic.exceptions.NoFileLoadedException;
+import org.zinemanager.logic.settings.PrintManagerSettings;
 import org.zinemanager.logic.settings.ZineManagerSettings;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,18 +41,19 @@ public class DatabaseManager {
 	protected String appPath = "/ZineManager";
 	private String	settingPath = "/settings",
 					logPath     = "/logs";
-	private String zineManagerSettingPath;
+	private String zineManagerSettingPath, printManagerSettingPath;
 	
 	protected File systemFile;
 	private File settingDirectory, logDirectory;
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	07.10.2023
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	private void initSettingPaths() {
-		zineManagerSettingPath = settingDirectory.getAbsolutePath() + "/zineManagerSettings.xml";
+		zineManagerSettingPath  = settingDirectory.getAbsolutePath() + "/zineManagerSettings.xml";
+		printManagerSettingPath = settingDirectory.getAbsolutePath() + "/printManagerSettings.xml";
 	}
 	
 	/**	Wf	11.11.2023
@@ -168,6 +170,14 @@ public class DatabaseManager {
 		
 		saveObjectAsXML(zineManagerSettingPath, vCloned);
 	}
+	/**	Wf	18.01.2024
+	 * 
+	 * @param pPrintManagerSettings
+	 * @throws Exception
+	 */
+	public void savePrintManagerSettings(PrintManagerSettings pPrintManagerSettings) throws Exception {
+		saveObjectAsXML(zineManagerSettingPath, pPrintManagerSettings);
+	}
 	
 	//-----
 	
@@ -222,6 +232,16 @@ public class DatabaseManager {
 	public ZineManagerSettings loadZineManagerSettings() throws Exception {
 		return loadObjectFromXML(zineManagerSettingPath, ZineManagerSettings.class);
 	}
+	/**	Wf	18.01.2024
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	public PrintManagerSettings loadPrintManagerSettings() throws Exception {
+		return loadObjectFromXML(printManagerSettingPath, PrintManagerSettings.class);
+	}
+	
+	//-----
 	
 	/**	Wf	12.11.2023
 	 * 

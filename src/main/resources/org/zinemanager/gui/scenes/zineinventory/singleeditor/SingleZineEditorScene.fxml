@@ -48,7 +48,7 @@
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <ChoiceBox fx:id="cbCategory" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" HBox.hgrow="ALWAYS" />
+                              <ChoiceBox fx:id="cbCategory" minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" prefWidth="243.0" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_RIGHT" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">

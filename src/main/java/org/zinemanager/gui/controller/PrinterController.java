@@ -1,4 +1,4 @@
-/**	ZineManager v0.1		Wf	16.01.2024
+/**	ZineManager v0.1		Wf	18.01.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -68,7 +68,7 @@ public class PrinterController extends BasicController {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	16.01.2024
+	/**	Wf	18.01.2024
 	 * 
 	 * @param pTitle
 	 * @param pZinePrintManager
@@ -84,13 +84,19 @@ public class PrinterController extends BasicController {
 		
 		zineprintingManager.initiatePrinterListener(() -> { finishedPrint();}, () -> {  LogManager.handleMessage("Attention, dieser Druck gibt Infos."); });
 		
-		printStatus = 1;
+		if (zineprintingManager.getTotalCoverPrintingNumber() > 0) printStatus = 1;
+		else 													   printStatus = 3;
 		isDuplex = zineprintingManager.isDuplex();
 		
 		if (isDuplex) totalPrintingNumber = 2 * totalPrintingNumber;
 		
 		setEnabled(true);
-		startNextPrint();
+		
+		if (printStatus == 1) {
+			isPrinting = false;
+			
+			LogManager.handleMessage("Bitte prüfen, ob genügend Coverpapier eingelegt ist.\nEs werden "+ zineprintingManager.getTotalCoverPrintingNumber() + " Covers gedruckt.");
+		}else startNextPrint();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -193,21 +199,40 @@ public class PrinterController extends BasicController {
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	16.01.2024
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	public void startNextPrint() {
 		int vCurID;
 		
-		if (!repeatingCurrent) curPrintElementIndx ++;
-		
 		try {
+			if (!repeatingCurrent) {
+				curPrintElementIndx ++;
+				
+				while( (((1 == printStatus) || (2 == printStatus)) && (!zineprintingManager.hasPrintingElementExtracoverPrint(liZinePrintingIDs.get(curPrintElementIndx))
+						|| !zineprintingManager.isPrintingElementPrintingCover(liZinePrintingIDs.get(curPrintElementIndx))))
+						&& (curPrintElementIndx < liZinePrintingIDs.size()))
+					curPrintElementIndx ++;
+			}
+		
 			vCurID = liZinePrintingIDs.get(curPrintElementIndx);
 			
-			if      (printStatus == 1) zineprintingManager.printElement(vCurID, (isDuplex) ? PrintSides.DUPLEX : PrintSides.ODD_PAGES, true );
-			else if (printStatus == 2) zineprintingManager.printElement(vCurID, PrintSides.EVEN_PAGES, true );
-			else if (printStatus == 3) zineprintingManager.printElement(vCurID, (isDuplex) ? PrintSides.DUPLEX : PrintSides.ODD_PAGES, false );
-			else if (printStatus == 4) zineprintingManager.printElement(vCurID, PrintSides.EVEN_PAGES, false );
+			if ((((3 == printStatus) || (4 == printStatus)) || (zineprintingManager.hasPrintingElementExtracoverPrint(vCurID) && zineprintingManager.isPrintingElementPrintingCover(vCurID)))) {
+				if      (printStatus == 1) zineprintingManager.printElement(vCurID, (isDuplex) ? PrintSides.DUPLEX : PrintSides.ODD_PAGES, true );
+				else if (printStatus == 2) zineprintingManager.printElement(vCurID, PrintSides.EVEN_PAGES, true );
+				else if (printStatus == 3) zineprintingManager.printElement(vCurID, (isDuplex) ? PrintSides.DUPLEX : PrintSides.ODD_PAGES, false );
+				else if (printStatus == 4) zineprintingManager.printElement(vCurID, PrintSides.EVEN_PAGES, false );
+			}else {
+				if ((printStatus == 1) || (printStatus == 2) || ((printStatus == 3) && (!isDuplex))) {
+					curPrintElementIndx = -1;
+					
+					if (!isDuplex) printStatus ++;
+					else printStatus = 3;
+					
+					if ((printStatus == 2) || (printStatus == 4)) LogManager.handleMessage("Bitte gedrucktes Papier umdrehen.\nZweite Seiten soll gedruckt werden.");
+					else if (printStatus == 3) LogManager.handleMessage("Bitte normales Papier einlegen.\nEs werden "+ zineprintingManager.getTotalZinePrintingNumber() +" Dateien gedruckt." );
+				}else printStatus = 5;
+			}
 				
 			isPrinting = true;
 			repeatingCurrent = false;
@@ -215,7 +240,7 @@ public class PrinterController extends BasicController {
 		}catch(Exception ex) {LogManager.handleException(ex);}
 	}
 	
-	/**	Wf	16.01.2024
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	public void finishedPrint() {
@@ -233,19 +258,18 @@ public class PrinterController extends BasicController {
 			}else{
 				isPrinting = false;
 				
-				if ((printStatus == 2) || ((printStatus == 3) && (!isDuplex))) {
+				if ((printStatus == 1) || (printStatus == 2) || ((printStatus == 3) && (!isDuplex))) {
 					curPrintElementIndx = -1;
 					
 					if (!isDuplex) printStatus ++;
 					else printStatus = 3;
 					
-					if (isPrinting) startNextPrint();
-				}else {
-					printStatus = 5;
-					
-					setEnabled(true);
-					update();
-				}
+					if ((printStatus == 2) || (printStatus == 4)) LogManager.handleMessage("Bitte gedrucktes Papier umdrehen.\nZweite Seite soll gedruckt werden.");
+					else if (printStatus == 3) LogManager.handleMessage("Bitte normales Papier einlegen.\nEs werden "+ zineprintingManager.getTotalZinePrintingNumber() +" Dateien gedruckt." );
+				}else printStatus = 5;
+				
+				setEnabled(true);
+				update();
 			}
 		}catch(Exception ex) {LogManager.handleException(ex);}
 	}

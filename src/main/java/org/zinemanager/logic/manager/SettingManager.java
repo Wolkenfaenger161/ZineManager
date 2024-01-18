@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	11.11.2023
+/**	ZineManager v0.1	Wf	18.01.2024
  * 
  * 	logic.manager
  * 	BasicManager
@@ -18,27 +18,24 @@
 
 package org.zinemanager.logic.manager;
 
+import javax.print.attribute.standard.Sides;
+
+import org.zinemanager.logic.settings.PrintManagerSettings;
 import org.zinemanager.logic.settings.ZineManagerSettings;
 
 public class SettingManager extends BasicManager {
 	private DatabaseManager databaseManager;
 	
 	private ZineManagerSettings zineManagerSettings;
+	private PrintManagerSettings printManagerSettings;
 	
-	/**	Wf	07.10.2023
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	public SettingManager(DatabaseManager pDatabaseManager) {
 		databaseManager = pDatabaseManager;
 		
-		try { loadAllSettings(); }
-		catch(Exception ex) {
-			if (ex.getMessage().equals("21; lOfXML,DaM")) {
-				zineManagerSettings = new ZineManagerSettings();
-			}else {
-				LogManager.handleException(ex);
-			}
-		}
+		loadAllSettings();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -56,6 +53,21 @@ public class SettingManager extends BasicManager {
 	 */
 	public String getCurrentDataSetPath() {
 		return zineManagerSettings.getCurrentDataSetPath();
+	}
+	
+	/**	Wf	18.01.2024
+	 * 
+	 * @return
+	 */
+	public boolean isDeafultExtracoverPrint() {
+		return printManagerSettings.isDefaultExtracoverPrint();
+	}
+	/**	Wf	18.01.2024
+	 * 
+	 * @return
+	 */
+	public Sides getDoublesidePrintart() {
+		return printManagerSettings.getDoublesidePrintart();
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -77,6 +89,22 @@ public class SettingManager extends BasicManager {
 		zineManagerSettings.setCurrentDataSetPath(pCurrentDataSetPath);
 	}
 	
+	/**	Wf	18.01.2024
+	 * 
+	 * @param pHasDefaultExtracoverPrint
+	 */
+	public void setDefaultExtracoverPrint(boolean pHasDefaultExtracoverPrint) {
+		printManagerSettings.setDefaultExtracoverPrint(pHasDefaultExtracoverPrint);
+	}
+	/**	Wf	18.01.2024
+	 * 
+	 * @param pDoublesidePrintart
+	 * @throws Exception
+	 */
+	public void setDoublesidePrintart(Sides pDoublesidePrintart) throws Exception{
+		printManagerSettings.setDoublesidePrintart(pDoublesidePrintart);
+	}
+	
 //--------------------------------------------------------------------------------------------------------
 
 	/**	Wf	07.10.2023
@@ -86,11 +114,29 @@ public class SettingManager extends BasicManager {
 	public void loadZineManagerSettings() throws Exception {
 		zineManagerSettings = databaseManager.loadZineManagerSettings();
 	}
-	/**	Wf	07.10.2023
+	/**	Wf	18.01.2024
+	 * 
+	 * @throws Exception
+	 */
+	public void loadPrintManagerSettings() throws Exception{
+		printManagerSettings = databaseManager.loadPrintManagerSettings();
+	}
+	//-----
+	/**	Wf	18.01.2024
 	 * 
 	 */
-	public void loadAllSettings() throws Exception{
-		loadZineManagerSettings();
+	public void loadAllSettings(){
+		try {loadZineManagerSettings();}
+		catch(Exception ex) {
+			if (ex.getMessage().equals("21; lOfXML,DaM")) zineManagerSettings = new ZineManagerSettings();
+			else 										  LogManager.handleException(ex);
+		}
+		
+		try {loadPrintManagerSettings();}
+		catch(Exception ex) {
+			if (ex.getMessage().equals("21; lOfXML,DaM")) printManagerSettings = new PrintManagerSettings();
+			else 										  LogManager.handleException(ex);
+		}
 	}
 	
 	//-----
@@ -102,11 +148,20 @@ public class SettingManager extends BasicManager {
 	public void saveZineManagerSettings() throws Exception{
 		databaseManager.saveZineManagerSettings(zineManagerSettings);
 	}
-	/**	Wf	07.10.2023
+	/**	Wf	18.01.2024
+	 * 
+	 * @throws Exception
+	 */
+	public void savePrintManagerSettings() throws Exception{
+		databaseManager.savePrintManagerSettings(printManagerSettings);
+	}
+	//-----
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	public void saveAllSettings() throws Exception{
 		saveZineManagerSettings();
+		savePrintManagerSettings();
 	}
 	
 //--------------------------------------------------------------------------------------------------------

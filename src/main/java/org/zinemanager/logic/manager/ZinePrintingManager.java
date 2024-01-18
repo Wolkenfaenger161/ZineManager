@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	16.01.2024
+/**	ZineManager v0.1	Wf	18.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -36,7 +36,6 @@ import javax.print.attribute.standard.OrientationRequested;
 import javax.print.attribute.standard.PageRanges;
 import javax.print.attribute.standard.PrinterIsAcceptingJobs;
 import javax.print.attribute.standard.QueuedJobCount;
-import javax.print.attribute.standard.Sides;
 import javax.print.event.PrintServiceAttributeEvent;
 import javax.print.event.PrintServiceAttributeListener;
 
@@ -62,7 +61,6 @@ public class ZinePrintingManager extends BasicManager {
 	
 	private PrintService printservices;
 	private PrinterJob printJob;
-	//private DocPrintJob printJob;
 	private PrintRequestAttributeSet basicPrintAttributes;
 	
 	private ArrayList<PrintingElement> printingElements;
@@ -96,6 +94,34 @@ public class ZinePrintingManager extends BasicManager {
 	}
 	
 	//-----
+	
+	/**	Wf	17.01.2024
+	 * 
+	 * @param pID
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean hasPrintingElementExtracoverPrint(int pID) throws Exception {
+		return getPrintingElement(pID).hasExtracoverPrint();
+	}
+	/**	Wf	17.01.2024
+	 * 
+	 * @param pID
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean isPrintingElementPrintingCover(int pID) throws Exception{
+		return getPrintingElement(pID).isPrintingCover();
+	}
+	/**	Wf	18.01.2024
+	 * 
+	 * @param pID
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean hasPrintingElementFinishedPrinting(int pID) throws Exception{
+		return getPrintingElement(pID).hasFinishedPrinting();
+	}
 	
 	/**	Wf	03.12.2023
 	 * 
@@ -166,6 +192,34 @@ public class ZinePrintingManager extends BasicManager {
 	
 	//----------------------------------------------------------------------------------------------------
 
+	/**	Wf	17.01.2024
+	 * 
+	 * @param pID
+	 * @param pHasExtrtacoverPrint
+	 * @throws Exception
+	 */
+	public void setPrintingElementExtracoverPrint(int pID, boolean pHasExtrtacoverPrint) throws Exception{
+		getPrintingElement(pID).setExtracoverPrint(pHasExtrtacoverPrint);
+	}
+	/**	Wf	17.01.2024
+	 * 
+	 * @param pID
+	 * @param pIsPrintingCover
+	 * @throws Exception
+	 */
+	public void setPrintingElementPrintingCover(int pID, boolean pIsPrintingCover) throws Exception{
+		getPrintingElement(pID).setPrintingCover(pIsPrintingCover);
+	}
+	/**	Wf	17.01.2024
+	 * 
+	 * @param pID
+	 * @param pHasFinishedPrinting
+	 * @throws Exception
+	 */
+	public void setPrintingElementFinishedPrinting(int pID, boolean pHasFinishedPrinting) throws Exception{
+		getPrintingElement(pID).setFinishedPrinting(pHasFinishedPrinting);
+	}
+	
 	/**	Wf	03.12.2023
 	 * 
 	 * @param pID
@@ -293,7 +347,7 @@ public class ZinePrintingManager extends BasicManager {
 		
 		return vRet;
 	}
-	/**	Wf	16.01.2024
+	/**	Wf	17.01.2024
 	 * 
 	 * @return
 	 */
@@ -301,7 +355,7 @@ public class ZinePrintingManager extends BasicManager {
 		int vRet = 0;
 		
 		for (PrintingElement vPrintingElement : printingElements) {
-			if (vPrintingElement.isCoverprint()) vRet += vPrintingElement.getPrinting();
+			if (vPrintingElement.hasExtracoverPrint() && vPrintingElement.isPrintingCover()) vRet += vPrintingElement.getPrinting();
 		}
 		
 		return vRet;
@@ -324,24 +378,20 @@ public class ZinePrintingManager extends BasicManager {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	16.01.2024
+	/**	Wf	18.01.2024
 	 * 
 	 * @param <PS>
 	 * @param pPrintselector
 	 * @throws Exception
 	 */
 	public<PS extends PrinterSelectorInterface> boolean settingUpPrinting(PS pPrintselector) throws Exception {
-		//basicPrintAttributes.add(new PageRanges(1, 1));
-		//basicPrintAttributes.add(new Copies(20));
-		//printJob = PrinterJob.getPrinterJob();
-		
 		pPrintselector.setPrintServiceSelection( PrintServiceLookup.lookupPrintServices(null, basicPrintAttributes) );
 		
 		printservices = pPrintselector.getPrintServiceSelection();
 		printJob.setPrintService(printservices);
 		
-		isDuplex = printservices.isAttributeValueSupported(Sides.DUPLEX, null, null);
-		if (isDuplex) basicPrintAttributes.add(Sides.DUPLEX);
+		isDuplex = printservices.isAttributeValueSupported(settingManager.getDoublesidePrintart(), null, null);
+		if (isDuplex) basicPrintAttributes.add(settingManager.getDoublesidePrintart());
 		
 		return printservices != null;
 	}
@@ -386,7 +436,7 @@ public class ZinePrintingManager extends BasicManager {
 		});
 	}
 	
-	/**	Wf	16.01.2024
+	/**	Wf	18.01.2024
 	 * 
 	 * @param pID
 	 * @throws Exception
@@ -409,7 +459,8 @@ public class ZinePrintingManager extends BasicManager {
 		
 		vPrintingElement = getPrintingElement(pID);
 		if (vPrintingElement != null) {
-			if (!vPrintingElement.getFilePath().equals("") && vPrintingElement.getPrinting() > 0) {
+			if (!vPrintingElement.getFilePath().equals("") && vPrintingElement.getPrinting() > 0 
+					&& (vPrintingElement.hasExtracoverPrint() || (!pCoverPrint))) {
 				vDocument = Loader.loadPDF(new File(vPrintingElement.getFilePath()));
 				vPageFormat = printJob.defaultPage();
 				
@@ -431,26 +482,46 @@ public class ZinePrintingManager extends BasicManager {
 					vPageFormat.setOrientation(PageFormat.LANDSCAPE);
 				}
 				
-				if (pCoverPrint) {
-					if      (pPrintSide == PrintSides.DUPLEX) 	  vPrintAttributes.add(new PageRanges(1, 2));
-					else if (pPrintSide == PrintSides.ODD_PAGES)  vPrintAttributes.add(new PageRanges(1, 1));
-					else if (pPrintSide == PrintSides.EVEN_PAGES) vPrintAttributes.add(new PageRanges(2, 2));
+				if (vPrintingElement.hasExtracoverPrint()) {
+					if (pCoverPrint) {
+						if      (pPrintSide == PrintSides.DUPLEX) 	  vPrintAttributes.add(new PageRanges(1, 2));
+						else if (pPrintSide == PrintSides.ODD_PAGES)  vPrintAttributes.add(new PageRanges(1, 1));
+						else if (pPrintSide == PrintSides.EVEN_PAGES) vPrintAttributes.add(new PageRanges(2, 2));
+					}else {
+						if      (pPrintSide == PrintSides.DUPLEX) 	  vPrintAttributes.add(new PageRanges(3, vDocument.getNumberOfPages()));
+						else if (pPrintSide == PrintSides.ODD_PAGES) {
+							vSingleSidePrintPages = new int[((int)Math.round(vDocument.getNumberOfPages()/2)) - 1][2];
+						
+							for (int i=0; i<vSingleSidePrintPages.length; i++) {
+								vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+3;
+							}
+						
+							vPrintAttributes.add(new PageRanges(vSingleSidePrintPages));
+						}else if (pPrintSide == PrintSides.EVEN_PAGES) {
+							vSingleSidePrintPages = new int[((int)Math.round((vDocument.getNumberOfPages()/2)-0.5)) - 1][2];
+						
+							for (int i=0; i<vSingleSidePrintPages.length; i++) {
+								vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+4;
+							}
+						
+							vPrintAttributes.add(new PageRanges(vSingleSidePrintPages));
+						}
+					}
 				}else {
-					if      (pPrintSide == PrintSides.DUPLEX) 	  vPrintAttributes.add(new PageRanges(3, vDocument.getNumberOfPages()));
+					if      (pPrintSide == PrintSides.DUPLEX) 	  vPrintAttributes.add(new PageRanges(1, vDocument.getNumberOfPages()));
 					else if (pPrintSide == PrintSides.ODD_PAGES) {
-						vSingleSidePrintPages = new int[((int)Math.round(vDocument.getNumberOfPages()/2)) - 1][2];
+						vSingleSidePrintPages = new int[((int)Math.round(vDocument.getNumberOfPages())/2)][2];
 						
 						for (int i=0; i<vSingleSidePrintPages.length; i++) {
-							vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+3;
+							vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+1;
 						}
 						
 						vPrintAttributes.add(new PageRanges(vSingleSidePrintPages));
-					}
-					else if (pPrintSide == PrintSides.EVEN_PAGES) {
-						vSingleSidePrintPages = new int[((int)Math.round((vDocument.getNumberOfPages()/2)-0.5)) - 1][2];
+					}else if (pPrintSide == PrintSides.EVEN_PAGES) {
+						vSingleSidePrintPages = new int[(int)Math.round((vDocument.getNumberOfPages()/2) - 0.5)][2];
 						
 						for (int i=0; i<vSingleSidePrintPages.length; i++) {
-							vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+4;
+							vSingleSidePrintPages[i][0] = vSingleSidePrintPages[i][1] = (2*i)+2;
 						}
 						
 						vPrintAttributes.add(new PageRanges(vSingleSidePrintPages));
@@ -463,7 +534,6 @@ public class ZinePrintingManager extends BasicManager {
 				
 				printJob.setPageable(vBook);
 				printJob.print(vPrintAttributes);
-				//printJob.print();
 				
 				isPrinting = true;
 			}
@@ -478,48 +548,6 @@ public class ZinePrintingManager extends BasicManager {
 		isPrinting = false;
 	}
 	
-	public void printZines() throws Exception{
-		/*PDDocument vDocument;
-		PDFPageable vPDFPageable;
-		SimpleDoc vDoc;
-		PrintRequestAttributeSet vPrintAttributes = new HashPrintRequestAttributeSet();
-		vPrintAttributes.addAll(basicPrintAttributes);
-		
-		if (printingElements.size() > 0) {
-			
-			LogManager.handleMessage("Beginne Druckvorgang");
-			for (PrintingElement vPrintingElement : printingElements) {
-				//printJob.addPrintJobListener(printJobListener);
-				if (!vPrintingElement.getFilePath().equals("") && vPrintingElement.getPrinting() > 0) {
-					LogManager.handleMessage("1");
-					vDocument = Loader.loadPDF(new File(vPrintingElement.getFilePath()));
-					vPDFPageable = new PDFPageable(vDocument);
-					vDoc = new SimpleDoc(vPDFPageable, DocFlavor.SERVICE_FORMATTED.PAGEABLE, null);
-					LogManager.handleMessage("2");
-					if (areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A4)) {
-						vPrintAttributes.add(OrientationRequested.PORTRAIT);
-					}else if(areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A5)) {
-						vPrintAttributes.add(OrientationRequested.LANDSCAPE);
-					}
-					
-					//vPrintAttributes.add(new Copies(vPrintingElement.getPrinting()));
-					LogManager.handleMessage("3");
-					//printJob.print(vDoc, vPrintAttributes);
-					vDocument.close();
-					
-					//printJob.getPrintService().
-					LogManager.handleMessage("4");*/
-					/*vPJob.setCopies(vPrintingElement.getPrinting());
-					vPJob.setPageable(new PDFPageable(vDocument));
-					
-					vPJob.print(vPrintAttributes);*//*
-				}
-			}
-			LogManager.handleMessage("Finished Printing");
-		} else throw new Exception("05; pZi,ZPM");*/
-		
-	}
-
 	/**	16.01.2024
 	 * 
 	 * @param pID

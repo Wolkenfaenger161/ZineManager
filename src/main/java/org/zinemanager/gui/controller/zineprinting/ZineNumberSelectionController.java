@@ -1,4 +1,4 @@
-/**	ZineManager v0.1		Wf	08.12.2023
+/**	ZineManager v0.1		Wf	18.01.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -20,7 +20,6 @@
 package org.zinemanager.gui.controller.zineprinting;
 
 import org.zinemanager.gui.Printer;
-import org.zinemanager.gui.PrinterSelector;
 import org.zinemanager.gui.callables.GUIListElementFormater;
 import org.zinemanager.gui.callables.GUITableElementSetter;
 import org.zinemanager.gui.controller.BasicManagerController;
@@ -29,12 +28,15 @@ import org.zinemanager.gui.tableelements.ZinePrintNumberTableElement;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.ZinePrintingManager;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.cell.CheckBoxTableCell;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
@@ -52,13 +54,15 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 	private TableColumn<ZinePrintNumberTableElement, String> tcName;
 	@FXML
 	private TableColumn<ZinePrintNumberTableElement, Integer> tcQuota, tcCurrent, tcPrinting;
+	@FXML
+	private TableColumn<ZinePrintNumberTableElement, Boolean> tcExtraCoverprint, tcPrintingCover;
 	
 	private ObservableList<ZinePrintNumberTableElement> liZines;
 	
 	private GUIListElementFormater<ZinePrintNumberTableElement> pZinePrintNumberTableElementGenerater;
 	private GUITableElementSetter<ZinePrintNumberTableElement> pZinePrintNumberTableElementSetter;
 	
-	/**	Wf	03.12.2023
+	/**	Wf	17.01.2024
 	 * 
 	 */
 	public ZineNumberSelectionController() {
@@ -67,7 +71,8 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 		liZines = null;
 		pZinePrintNumberTableElementGenerater = (pID) -> {
 			return new ZinePrintNumberTableElement(pID, basicManager.getPrintingElementName(pID), basicManager.getPrintingElementQuota(pID),
-													basicManager.getPrintingElementCurrent(pID), basicManager.getPrintingElementPrinting(pID));
+													basicManager.getPrintingElementCurrent(pID), basicManager.getPrintingElementPrinting(pID),
+													basicManager.hasPrintingElementExtracoverPrint(pID), basicManager.isPrintingElementPrintingCover(pID));
 		};
 		pZinePrintNumberTableElementSetter = pTableElement -> {
 			int vElementID;
@@ -79,12 +84,15 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 			pTableElement.setQuota(basicManager.getPrintingElementQuota(vElementID));
 			pTableElement.setCurrent(basicManager.getPrintingElementCurrent(vElementID));
 			pTableElement.setPrinting(basicManager.getPrintingElementPrinting(vElementID));
+			
+			pTableElement.setExtracoverprint(basicManager.hasPrintingElementExtracoverPrint(vElementID));
+			pTableElement.setPrintingcover(basicManager.isPrintingElementPrintingCover(vElementID));
 		};
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	03.12.2023
+	/**	Wf	18.01.2024
 	 * 
 	 * @throws Exception
 	 */
@@ -95,8 +103,31 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 		tcQuota.setCellValueFactory(new PropertyValueFactory<ZinePrintNumberTableElement, Integer>("quota"));
 		tcCurrent.setCellValueFactory(new PropertyValueFactory<ZinePrintNumberTableElement, Integer>("current"));
 		tcPrinting.setCellValueFactory(new PropertyValueFactory<ZinePrintNumberTableElement, Integer>("printing"));
+		tcExtraCoverprint.setCellValueFactory(pCellData -> {
+			ZinePrintNumberTableElement vCellValue = pCellData.getValue();
+			BooleanProperty vRet = new SimpleBooleanProperty(vCellValue.isExtracoverprint());
+			
+			vRet.addListener((pObs, pOldValue, pNewValue) -> {
+				if (pOldValue != pNewValue) vCellValue.setExtracoverprint(pNewValue);
+			});
+			
+			return vRet;
+		});
+		tcPrintingCover.setCellValueFactory(pCellData -> {
+			ZinePrintNumberTableElement vCellValue = pCellData.getValue();
+			BooleanProperty vRet = new SimpleBooleanProperty(vCellValue.isPrintingcover());
+			
+			vRet.addListener((pObs, pOldValue, pNewValue) -> {
+				if (pOldValue != pNewValue) vCellValue.setPrintingcover(pNewValue);
+			});
+			
+			return vRet;
+		});
 		
 		tcPrinting.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+		tcExtraCoverprint.setCellFactory(CheckBoxTableCell.forTableColumn(tcExtraCoverprint));
+		tcPrintingCover.setCellFactory(CheckBoxTableCell.forTableColumn(tcPrintingCover));
+		
 		tcPrinting.setOnEditCommit(pEvent -> {
 			int vSelInd = pEvent.getTablePosition().getRow();
 			int vValue = (pEvent.getNewValue() != null) && (pEvent.getNewValue().intValue() >= 0) ? pEvent.getNewValue().intValue() : pEvent.getOldValue().intValue();
@@ -168,7 +199,7 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	08.12.2023
+	/**	Wf	18.01.2024
 	 * 
 	 */
 	@FXML
@@ -186,7 +217,8 @@ public class ZineNumberSelectionController<ParentController extends ParentContro
 			setDisabled();
 			vPrinter.startPrinting();
 			setEnabled();
-			//basicManager.printZines(new PrinterSelector());
+			
+			super.back();
 		}catch(Exception ex) {LogManager.handleException(ex);}
 	}
 	

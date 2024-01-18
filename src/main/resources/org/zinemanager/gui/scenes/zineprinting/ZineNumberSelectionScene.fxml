@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="TOP_CENTER" spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="org.zinemanager.gui.controller.zineprinting.ZineNumberSelectionController">
+<VBox alignment="TOP_CENTER" spacing="10.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineprinting.ZineNumberSelectionController">
    <children>
       <Label text="Zine Druck Auswahl">
          <font>
@@ -31,9 +30,15 @@
                               <TableView fx:id="tvZines" editable="true" minHeight="-Infinity" minWidth="-Infinity">
                                 <columns>
                                   <TableColumn fx:id="tcName" editable="false" minWidth="150.0" prefWidth="-1.0" text="Name" />
-                                    <TableColumn fx:id="tcQuota" editable="false" minWidth="75.0" prefWidth="-1.0" text="Soll" />
-                                  <TableColumn fx:id="tcCurrent" editable="false" minWidth="75.0" prefWidth="-1.0" text="Aktuell" />
-                                    <TableColumn fx:id="tcPrinting" minWidth="75.0" prefWidth="-1.0" text="Drucken" />
+                                    <TableColumn prefWidth="75.0" text="Anzahl">
+                                       <columns>
+                                          <TableColumn fx:id="tcQuota" editable="false" minWidth="75.0" prefWidth="-1.0" text="Soll" />
+                                        <TableColumn fx:id="tcCurrent" editable="false" minWidth="75.0" prefWidth="-1.0" text="Aktuell" />
+                                          <TableColumn fx:id="tcPrinting" minWidth="75.0" prefWidth="-1.0" text="Drucken" />
+                                       </columns>
+                                    </TableColumn>
+                                    <TableColumn fx:id="tcExtraCoverprint" minWidth="105.0" prefWidth="-1.0" text="Extra Coverdruck" />
+                                    <TableColumn fx:id="tcPrintingCover" minWidth="90.0" prefWidth="-1.0" text="Cover drucken" />
                                 </columns>
                               </TableView>
                            </children>

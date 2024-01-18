@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	03.12.2023
+/**	ZineManager v0.1	Wf	18.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -830,6 +830,24 @@ public class ZineManager extends BasicManager {
 	
 //--------------------------------------------------------------------------------------------------------
 
+	/**Wf	18.01.2024
+	 * 
+	 * @throws Exception
+	 */
+	public void updatePrintedZineCounts(Date pPrintDate) throws Exception{
+		ArrayList<Integer> vPrintingZineIDs = zinePrintingManager.getPrintingElementIDs();
+		
+		if (pPrintDate != null) {
+			for (Integer vID : vPrintingZineIDs) {
+				if (zinePrintingManager.hasPrintingElementFinishedPrinting(vID) && (zinePrintingManager.getPrintingElementPrinting(vID) > 0)) {
+					addCountToZine(vID, zinePrintingManager.getPrintingElementPrinting(vID), pPrintDate);
+				}
+			}
+		}else throw new Exception("04; uPZC,ZiM");
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	
 	/**	Wf	04.09.2023
 	 * 
 	 * @param pID
