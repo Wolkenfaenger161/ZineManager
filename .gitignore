@@ -2,6 +2,7 @@
 .settings
 
 *.xml
+*.xml2
 
 build/classes
 build/distributions/*

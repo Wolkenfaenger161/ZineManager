@@ -656,10 +656,10 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		vFXMLLoader = new FXMLLoader(getClass().getResource("/org/zinemanager/gui/scenes/zineinventory/ZineListTabScene.fxml"));
 		vBox = vFXMLLoader.load();
 		vTabController = vFXMLLoader.getController();
-		
 		vTabController.setParentController(this);
 		vTabController.setUp(pZineListID);
 		vTabController.setZineListTitle(vZineListName);
+		
 		if (pZineListID != -1)	vTabController.setZineListTable( generateZineTableList(basicManager.getZineListZineIDs(pZineListID), null) );
 		else					vTabController.setZineListTable( generateZineTableList(basicManager.getZineIDs(), null) );
 		vNewTab.setContent(vBox);
