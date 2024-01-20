@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	13.11.2023
+/**	ZineManager v0.2		Wf	20.01.2024
  * 	
  * 	gui.controller.zineinventory.multieditor
  * 	  BasicController
@@ -37,6 +37,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
@@ -57,6 +58,9 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	private Spinner<Integer> spQuota, spDistributedOffset;
 	@FXML
 	private ChoiceBox<NameTableElement> cbCategory;
+	@FXML
+	private CheckBox cbExtracoverPrint;
+	
 	@FXML
 	private TableView<ZineCountTableElement> tvCounts;
 	@FXML
@@ -82,7 +86,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	13.11.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pStage
 	 * @throws Exception
@@ -148,6 +152,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 				}
 			}
 			
+			cbExtracoverPrint.setSelected( basicManager.hasZineExtraCoverprint(editObjectID) );
+			
 			liCounts.setAll(generateNewGUIList(basicManager.getZineCountIDs(editObjectID), 
 					pID -> {return new ZineCountTableElement(pID, basicManager.getZineCountValue(editObjectID, pID),
 															 basicManager.getZineCountDate(editObjectID, pID));	}, null, null));
@@ -164,7 +170,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 					else vRet = 0;
 						
 					return vRet;});
-		}
+		}else cbExtracoverPrint.setSelected( basicManager.getSettingManager().isDeafultExtracoverPrint() );
 			
 		setEnabledObjectInformations(true);
 	}
@@ -218,7 +224,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	
 	//---------------------------------------------------------------------------------------------------
 	
-	/**	Wf	01.10.2023
+	/**	Wf	20.01.2024
 	 * 	
 	 */
 	@FXML
@@ -244,6 +250,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 				if (editObjectID == -1) {
 					vCurID = basicManager.addZine(vName, vQuota, vDistributedOffset, vCategoryID, vFilePath);
 					
+					basicManager.setZineExtraCoverprint(vCurID, cbExtracoverPrint.isSelected() );
+					
 					for (ZineCountTableElement vZineCount : liCounts) {
 						basicManager.addCountToZine(vCurID, vZineCount.getCount(), vZineCount.getDate());
 					}
@@ -266,6 +274,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 						
 						if (!vIDStillExists) basicManager.removeCountFromZine(editObjectID, vOldID.intValue());
 					}
+					
+					basicManager.setZineExtraCoverprint(editObjectID, cbExtracoverPrint.isSelected());
 					
 					for (ZineCountTableElement vZineCount : liCounts) {
 						vCurCountID = vZineCount.getId();

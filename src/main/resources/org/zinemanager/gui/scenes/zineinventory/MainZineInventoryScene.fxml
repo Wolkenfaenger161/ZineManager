@@ -35,6 +35,8 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Zines">
             <items>
+                  <MenuItem fx:id="miOpenZine" mnemonicParsing="false" onAction="#openZine" text="Zine öffnen" />
+                  <SeparatorMenuItem mnemonicParsing="false" />
                   <MenuItem fx:id="miNewZine" mnemonicParsing="false" onAction="#createZine" text="Zine erstellen" />
                   <MenuItem fx:id="miEditZine" mnemonicParsing="false" onAction="#editZine" text="Zine bearbeiten" />
                   <MenuItem fx:id="miRemoveZine" mnemonicParsing="false" onAction="#removeZine" text="Zine entfernen" />
@@ -69,12 +71,18 @@
                <children>
                   <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
                      <children>
-                        <Button fx:id="btNewZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createZine" prefHeight="30.0" prefWidth="150.0" text="Zine aufnehmen" />
+                        <Button fx:id="btOpenZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openZine" prefHeight="30.0" prefWidth="150.0" text="Zine öffnen" />
+                     </children>
+                  </VBox>
+                  <Separator minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btNewZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createZine" prefHeight="30.0" prefWidth="150.0" text="Zine erstellen" />
                         <Button fx:id="btEditZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#editZine" prefHeight="30.0" prefWidth="150.0" text="Zine bearbeiten" />
                         <Button fx:id="btRemoveZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeZine" prefHeight="30.0" prefWidth="150.0" text="Zine entfernen" />
                      </children>
                   </VBox>
-                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                   <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
                      <children>
                         <Button fx:id="btNewZineList" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#createZineList" prefHeight="30.0" prefWidth="150.0" text="Zineliste erstellen" />
@@ -82,14 +90,14 @@
                         <Button fx:id="btRemoveZineList" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeZineList" prefHeight="30.0" prefWidth="150.0" text="Zineliste entfernen" />
                      </children>
                   </VBox>
-                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                   <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
                      <children>
                         <Button fx:id="btZines" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openZines" prefHeight="30.0" prefWidth="150.0" text="Zines" />
                         <Button fx:id="btCategories" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#openCategories" prefHeight="30.0" prefWidth="150.0" text="Kategorien" />
                      </children>
                   </VBox>
-                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" />
+                  <Separator minHeight="30.0" minWidth="-Infinity" orientation="VERTICAL" visible="false" VBox.vgrow="ALWAYS" />
                   <Button fx:id="btBack" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#back" prefHeight="30.0" prefWidth="150.0" text="Zurück" />
                </children>
                <padding>

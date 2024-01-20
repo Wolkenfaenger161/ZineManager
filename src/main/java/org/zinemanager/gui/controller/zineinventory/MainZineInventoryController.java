@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	13.11.2023
+/**	ZineManager v0.2		Wf	20.01.2024
  * 	
  * 	gui.controller.zineinventory
  * 	  BasicController
@@ -31,6 +31,7 @@ import org.zinemanager.gui.controller.BasicManagerController;
 import org.zinemanager.gui.controller.ChildController;
 import org.zinemanager.gui.controller.ParentControllerInterface;
 import org.zinemanager.gui.stages.ChildStage;
+import org.zinemanager.gui.stages.SettingManagerStage;
 import org.zinemanager.gui.stages.zineinventory.MainZineInventoryStage;
 import org.zinemanager.gui.stages.zineinventory.multieditor.MultiCategoryEditorStage;
 import org.zinemanager.gui.stages.zineinventory.multieditor.MultiZineEditorStage;
@@ -63,14 +64,14 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 	@FXML
 	private MenuItem miNew, miSave, miLoad, miImport, miExport, miBack, miClose,
-					 miNewZine, miEditZine, miRemoveZine, miZines,
+					 miOpenZine, miNewZine, miEditZine, miRemoveZine, miZines,
 					 miNewZinelist, miEditZinelist, miRemoveZinelist,
 					 miOptions, miAbout;
 	
 	@FXML
 	private Label lTitle, lVersion;
 	@FXML
-	private Button btNewZine, btEditZine, btRemoveZine, btNewZineList, btEditZineList, btRemoveZineList,
+	private Button btOpenZine, btNewZine, btEditZine, btRemoveZine, btNewZineList, btEditZineList, btRemoveZineList,
 					btZines, btCategories, btBack, btZinesUpdate, btInputClean;
 	@FXML
 	private DatePicker dpSelectedDate;
@@ -157,7 +158,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	11.11.2023
+	/**	Wf	20.01.2024
 	 * 
 	 */
 	public void setUp(MainZineInventoryStage<ParentController> pStage) {
@@ -165,7 +166,6 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		
 		datasetPorter = new DatasetPorter(basicManager);
 		
-		miOptions.setDisable(true);
 		miAbout.setDisable(true);
 		
 		lVersion.setText("v"+LogManager.getVersion());
@@ -217,7 +217,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		miBack.setDisable( !pEnable );
 		miClose.setDisable( !pEnable );
 	}
-	/**	Wf	05.10.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pEnable
 	 */
@@ -225,6 +225,8 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		ZineListTabController vController = zineListTabController.get( tabsZineLists.get( tpZineLists.getSelectionModel().getSelectedItem() ));
 		
 		miZines.setDisable( !pEnable );
+		//-----
+		miOpenZine.setDisable( ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) ? !pEnable : true );
 		//-----
 		miNewZine.setDisable( !pEnable );
 		miEditZine.setDisable( ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) ? !pEnable : true );
@@ -240,18 +242,23 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		miEditZinelist.setDisable( (tpZineLists.getSelectionModel().getSelectedIndex() > 0) ? !pEnable : true );
 		miRemoveZinelist.setDisable( (tpZineLists.getSelectionModel().getSelectedIndex() > 0) ? !pEnable : true );
 	}
-	
+	/**	Wf	20.01.2024
+	 * 
+	 * @param pEnable
+	 */
 	private void setEnabledOtherMenuItems(boolean pEnable) {
-		
+		miOptions.setDisable( !pEnable );
 	}
 	//-----
-	/**	Wf	03.10.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pEnable
 	 */
 	private void setEnabledZineButtons(boolean pEnable) {
 		ZineListTabController vController = zineListTabController.get( tabsZineLists.get( tpZineLists.getSelectionModel().getSelectedItem() ));
 		
+		btOpenZine.setDisable( ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) ? !pEnable : true );
+		//-----
 		btNewZine.setDisable( !pEnable );
 		btEditZine.setDisable( ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) ? !pEnable : true );
 		btRemoveZine.setDisable( ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) ? !pEnable : true );
@@ -391,9 +398,13 @@ public class MainZineInventoryController<ParentController extends ParentControll
 		setEnabled();
 	}
 	
+	/**	Wf	20.01.2024
+	 * 
+	 */
 	@FXML
 	public void openOptions() {
-		
+		childStage = new SettingManagerStage<MainZineInventoryController<ParentController>>(basicManager.getSettingManager(), this);
+		setDisabled();
 	}
 	
 	@FXML
@@ -402,6 +413,29 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	}
 	
 	//-----
+	
+	/**	Wf	20.01.2024
+	 * 
+	 */
+	@FXML
+	public void openZine() {
+		ZineListTabController vController = zineListTabController.get( tabsZineLists.get( tpZineLists.getSelectionModel().getSelectedItem() ));
+		
+		if ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) {
+			try { basicManager.openZine(vController.getSelectionModel().getSelectedItem().getId()); }
+			catch(Exception ex) {LogManager.handleException(ex);}
+		}else LogManager.handleMessage("Kein Zine ausgewählt!");
+	}
+	
+	public void moveZine() {
+		ZineListTabController vController = zineListTabController.get( tabsZineLists.get( tpZineLists.getSelectionModel().getSelectedItem() ));
+		
+		if ((vController != null) && (vController.getSelectionModel().getSelectedItem() != null)) {
+			// File Choosing
+			
+			// ausfuehren
+		}else LogManager.handleMessage("Kein Zine ausgewählt!");
+	}
 	
 	/**	Wf	03.10.2023
 	 * 

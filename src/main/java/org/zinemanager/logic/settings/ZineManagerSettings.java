@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	12.11.2023
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	BasicSetting
  * 	  ZineManagerSettings
@@ -26,13 +26,17 @@ public class ZineManagerSettings extends BasicSetting {
 	private int lastDataSetID;
 	@JsonProperty("currentDataSetPath")
 	private String currentDataSetPath;
+	@JsonProperty("pdfReaderFilePath")
+	private String pdfReaderFilePath;
 	
-	/**	Wf	11.11.2023
+	/**	Wf	19.01.2024
 	 * 
 	 */
 	public ZineManagerSettings() {
 		lastDataSetID = -1;
+		
 		currentDataSetPath = "";
+		pdfReaderFilePath = "";
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -51,6 +55,13 @@ public class ZineManagerSettings extends BasicSetting {
 	 */
 	public String getCurrentDataSetPath() {
 		return currentDataSetPath;
+	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @return
+	 */
+	public String getPdfReaderFilePath() {
+		return pdfReaderFilePath;
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -80,6 +91,17 @@ public class ZineManagerSettings extends BasicSetting {
 			else throw new Exception("02; sCDSP,ZMS");
 		}else throw new Exception("04; sCDSP,ZMS");
 	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @param pPDFReaderFilePath
+	 * @throws Exception
+	 */
+	public void setPdfReaderFilePath(String pPDFReaderFilePath) throws Exception{
+		if (pPDFReaderFilePath != null) {
+			if ( isPDFReaderFilePathValied(pPDFReaderFilePath) ) pdfReaderFilePath = pPDFReaderFilePath;
+			else throw new Exception("02; sPRFP,ZMS");
+		}else throw new Exception("04; sPRFP,ZMS");
+	}
 	
 //--------------------------------------------------------------------------------------------------------
 
@@ -88,6 +110,29 @@ public class ZineManagerSettings extends BasicSetting {
 	 */
 	public void increaseLastDataSetID() {
 		lastDataSetID ++;
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	19.01.2024
+	 * 
+	 * @param pPDFReaderFilePath
+	 * @return
+	 */
+	public boolean isPDFReaderFilePathValied(String pPDFReaderFilePath) {
+		boolean vRet = false;
+		File vPDFReaderFile;
+		
+		if (pPDFReaderFilePath != null) {
+			if (pPDFReaderFilePath.equals("")) vRet = true;
+			else {
+				vPDFReaderFile = new File(pPDFReaderFilePath);
+				
+				vRet = vPDFReaderFile.exists(); 
+			}
+		}
+		
+		return vRet;
 	}
 	
 //--------------------------------------------------------------------------------------------------------

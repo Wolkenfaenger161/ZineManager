@@ -17,6 +17,8 @@
 
 package org.zinemanager.gui.controller;
 
+import org.zinemanager.logic.manager.LogManager;
+
 public abstract class ChildController<ParentController extends ParentControllerInterface> extends BasicController {
 	protected ParentController parentController;
 	

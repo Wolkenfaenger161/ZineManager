@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.12.2023
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	MainManager
  * 
@@ -27,7 +27,6 @@ import org.zinemanager.logic.manager.DatabaseManager;
 import org.zinemanager.logic.manager.LogManager;
 import org.zinemanager.logic.manager.SettingManager;
 import org.zinemanager.logic.manager.ZineManager;
-import org.zinemanager.logic.manager.ZinePrintingManager;
 
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -39,7 +38,7 @@ public class MainManager extends Application {
 	private SettingManager settingManager;
 	private DataSetManager dataSetManager;
 	private ZineManager zineManager;
-	private ZinePrintingManager zinePrintingManager;
+	//private ZinePrintingManager zinePrintingManager;
 	
 	private DatasetPorter datasetPorter;
 	
@@ -55,7 +54,7 @@ public class MainManager extends Application {
 		System.setProperty("java.awt.headless", "true");
 	}
 
-	/**	Wf	03.12.2023
+	/**	Wf	19.01.2024
 	 * 
 	 */
 	public void start(Stage pPrimaryStage) {
@@ -77,7 +76,7 @@ public class MainManager extends Application {
 			LogManager.createLogEntry("Setting- + DataSet-Manager initialized");
 			
 			zineManager = new ZineManager(settingManager, dataSetManager);
-			zinePrintingManager = zineManager.getZinePrintingManager();
+			//zinePrintingManager = zineManager.getZinePrintingManager();
 			
 			LogManager.createLogEntry("Start GUI");
 			mainStage = new MainMenuStage(zineManager);

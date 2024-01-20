@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.01.2024
+/**	ZineManager v0.2	Wf	20.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -14,10 +14,15 @@
  * 	  07 Index Error
  * 	  08 Equal Object Error
  * 	  09 Wrong Selection
+ * 
+ * 	  20 Wrong OS
+ * 	  21 File dosn't exist
+ * 	  22 Wrong Right Error
  */
 
 package org.zinemanager.logic.manager;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -77,6 +82,13 @@ public class ZineManager extends BasicManager {
 	 */
 	public ZinePrintingManager getZinePrintingManager() {
 		return zinePrintingManager;
+	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @return
+	 */
+	public SettingManager getSettingManager() {
+		return settingManager;
 	}
 	
 	/**	Wf	10.10.2023
@@ -201,6 +213,19 @@ public class ZineManager extends BasicManager {
 		
 		if (vTemp != null) return vTemp.getFilePath();
 		else throw new Exception("02; gZFP,ZiM");
+	}
+	
+	/**	Wf	20.01.2024
+	 * 
+	 * @param pID
+	 * @return
+	 * @throws Exception
+	 */
+	public boolean hasZineExtraCoverprint(int pID) throws Exception{
+		ZineElement vTemp = getZine(pID);
+		
+		if (vTemp != null) return vTemp.isExtracoverprint();
+		else throw new Exception("02; hZEC,ZiM");
 	}
 	
 	/**	Wf	03.09.2023
@@ -357,6 +382,19 @@ public class ZineManager extends BasicManager {
 		
 		if ((vTemp != null) && (isFilePathValid(pFilePath))) vTemp.setFilePath(pFilePath);
 		else throw new Exception("04; sZFP,ZiM");
+	}
+	
+	/**	Wf	20.01.2024
+	 * 
+	 * @param pID
+	 * @param pHasExtraCoverprint
+	 * @throws Exception
+	 */
+	public void setZineExtraCoverprint(int pID, boolean pHasExtraCoverprint) throws Exception{
+		ZineElement vTemp = getZine(pID);
+		
+		if (vTemp != null) vTemp.setExtracoverprint(pHasExtraCoverprint);
+		else throw new Exception("04; sZEC,ZiM");
 	}
 	
 	/**	Wf	03.09.2023
@@ -564,7 +602,7 @@ public class ZineManager extends BasicManager {
 		
 		return vID;
 	}
-	/**	Wf	01.10.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pName
 	 * @param pQuota
@@ -575,11 +613,12 @@ public class ZineManager extends BasicManager {
 	 * @throws Exception
 	 */
 	public int addZine(String pName, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath) throws Exception{
-		return this.addZine(pName, pQuota, pDistributedOffset, pCategoryID, pFilePath, new ArrayList<DatedCount>());
+		return this.addZine(pName, settingManager.isDeafultExtracoverPrint(), pQuota, pDistributedOffset, pCategoryID, pFilePath, new ArrayList<DatedCount>());
 	}
-	/**	Wf	27.09.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pName
+	 * @param pHasExtraCoverprint
 	 * @param pQuota
 	 * @param pDistributedOffset
 	 * @param pCategoryID
@@ -588,10 +627,10 @@ public class ZineManager extends BasicManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public int addZine(String pName, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) throws Exception{
+	public int addZine(String pName, boolean pHasExtraCoverprint, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) throws Exception{
 		int vID = calculateNewID(currentDataSet.getZines());
 		
-		currentDataSet.addZine(vID, pName, pQuota, pDistributedOffset, pCategoryID, pFilePath, pCounts);
+		currentDataSet.addZine(vID, pName, pHasExtraCoverprint, pQuota, pDistributedOffset, pCategoryID, pFilePath, pCounts);
 		
 		return vID;
 	}
@@ -913,6 +952,46 @@ public class ZineManager extends BasicManager {
 		}else throw new Exception("04; cDVoZb,ZiM");
 		
 		return vRet;
+	}
+	
+	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	20.01.2024
+	 * 
+	 * @param pID
+	 * @throws Exception
+	 */
+	public void openZine(int pID) throws Exception {
+		ZineElement vTemp = getZine(pID);
+		String vPDFFilePath, vPDFReaderFilePath;
+		
+		File vPDFReaderFile;
+		ProcessBuilder vProcessBuilder;
+		
+		if (vTemp != null) {
+			vPDFFilePath = vTemp.getFilePath();
+			
+			if (isFilePathValid(vPDFFilePath) && !vPDFFilePath.equals("")) {
+				vPDFReaderFilePath = settingManager.getPDFReaderFilePath();
+				vProcessBuilder = new ProcessBuilder();
+				
+				if (vPDFReaderFilePath.equals("")) {
+					if (System.getProperty("os.name").contains("Windows")) {
+						vProcessBuilder.command("explorer", vPDFFilePath);
+					}else if (System.getProperty("os.name").contains("Linux")) {
+						vProcessBuilder.command("xdg-open", vPDFFilePath);
+					}else throw new Exception("20; oZi,ZiM");
+				}else {
+					vPDFReaderFile = new File(vPDFReaderFilePath);
+					
+					if (vPDFReaderFile.exists() && vPDFReaderFile.canExecute()) {
+						vProcessBuilder.command(vPDFReaderFilePath, vPDFFilePath);
+					}else throw new Exception("21/22; oZi,ZiM");
+				}
+				
+				vProcessBuilder.start();
+			}else throw new Exception("02; oZi,ZiM");
+		}else throw new Exception("04; oZi,ZiM");
 	}
 	
 //--------------------------------------------------------------------------------------------------------

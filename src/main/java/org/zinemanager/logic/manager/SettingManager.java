@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.01.2024
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	logic.manager
  * 	BasicManager
@@ -47,12 +47,20 @@ public class SettingManager extends BasicManager {
 	public int getLastDataSetID() {
 		return zineManagerSettings.getLastDataSetID();
 	}
+	//-----
 	/**	Wf	11.11.2023
 	 * 
 	 * @return
 	 */
 	public String getCurrentDataSetPath() {
 		return zineManagerSettings.getCurrentDataSetPath();
+	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @return
+	 */
+	public String getPDFReaderFilePath() {
+		return zineManagerSettings.getPdfReaderFilePath();
 	}
 	
 	/**	Wf	18.01.2024
@@ -62,6 +70,7 @@ public class SettingManager extends BasicManager {
 	public boolean isDeafultExtracoverPrint() {
 		return printManagerSettings.isDefaultExtracoverPrint();
 	}
+	//-----
 	/**	Wf	18.01.2024
 	 * 
 	 * @return
@@ -80,6 +89,7 @@ public class SettingManager extends BasicManager {
 	public void setLastDataSetID(int pLastDataSetID) throws Exception{
 		zineManagerSettings.setLastDataSetID(pLastDataSetID);
 	}
+	//-----
 	/**	Wf	11.11.23
 	 * 
 	 * @param pCurrentDataSetID
@@ -87,6 +97,14 @@ public class SettingManager extends BasicManager {
 	 */
 	public void setCurrentDataSetPath(String pCurrentDataSetPath) throws Exception {
 		zineManagerSettings.setCurrentDataSetPath(pCurrentDataSetPath);
+	}
+	/**	Wf	14.01.2024
+	 * 
+	 * @param pPPDReaderFilePath
+	 * @throws Exception
+	 */
+	public void setPDFReaderFilePath(String pPPDReaderFilePath) throws Exception {
+		zineManagerSettings.setPdfReaderFilePath(pPPDReaderFilePath);
 	}
 	
 	/**	Wf	18.01.2024
@@ -96,6 +114,7 @@ public class SettingManager extends BasicManager {
 	public void setDefaultExtracoverPrint(boolean pHasDefaultExtracoverPrint) {
 		printManagerSettings.setDefaultExtracoverPrint(pHasDefaultExtracoverPrint);
 	}
+	//-----
 	/**	Wf	18.01.2024
 	 * 
 	 * @param pDoublesidePrintart
@@ -174,6 +193,15 @@ public class SettingManager extends BasicManager {
 		zineManagerSettings.increaseLastDataSetID();
 		
 		return zineManagerSettings.getLastDataSetID();
+	}
+	
+	/**	Wf	19.01.2024
+	 * 
+	 * @param pPDFReaderFilePath
+	 * @return
+	 */
+	public boolean isPDFReaderFilePathValid(String pPDFReaderFilePath) {
+		return zineManagerSettings.isPDFReaderFilePathValied(pPDFReaderFilePath);
 	}
 	
 }

@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.01.2024
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	BasicSetting
  * 	  PrintManagerSettings
@@ -19,8 +19,13 @@ package org.zinemanager.logic.settings;
 
 import javax.print.attribute.standard.Sides;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class PrintManagerSettings extends BasicSetting {
+	@JsonProperty("defaultExtracoverPrint")
 	private boolean defaultExtracoverPrint;
+	@JsonIgnore
 	private Sides doublesidePrintart;
 	
 	/**	Wf	18.01.2024
@@ -49,6 +54,14 @@ public class PrintManagerSettings extends BasicSetting {
 	public Sides getDoublesidePrintart() {
 		return doublesidePrintart;
 	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @return
+	 */
+	@JsonProperty("doublesidePrintart")
+	public int getDoublesidePrintartSerialitazion() {
+		return (doublesidePrintart == Sides.TUMBLE ? 1 : 0 ); 
+	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
@@ -70,6 +83,14 @@ public class PrintManagerSettings extends BasicSetting {
 			if ((pDoublesidePrintart == Sides.DUPLEX) || (pDoublesidePrintart == Sides.TUMBLE)) doublesidePrintart = pDoublesidePrintart;
 			else throw new Exception("02; sDsPa,PMS");
 		} else throw new Exception("04; sDsPa,PMS");
+	}
+	/**	Wf	19.01.2024
+	 * 
+	 * @param pDerializationNumber
+	 */
+	public void setDoublesidePrintartSerialitazion(int pDerializationNumber) {
+		if (pDerializationNumber == 1) doublesidePrintart = Sides.TUMBLE;
+		else 						   doublesidePrintart = Sides.DUPLEX;
 	}
 		
 }

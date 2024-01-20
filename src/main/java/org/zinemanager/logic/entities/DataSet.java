@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	11.10.2023
+/**	ZineManager v0.2	Wf	20.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -232,10 +232,11 @@ public class DataSet extends NameElement {
 			else throw new Exception("02; aCa,DaS");
 		} else throw new Exception("02/04; aCa,DaS");
 	}
-	/**	Wf	01.10.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pNewID
 	 * @param pName
+	 * @param pExtraCoverprint
 	 * @param pQuota
 	 * @param pDistributedOffset
 	 * @param pCategoryID
@@ -243,7 +244,7 @@ public class DataSet extends NameElement {
 	 * @param pCounts
 	 * @throws Exception
 	 */
-	public void addZine(int pNewID, String pName, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) throws Exception{
+	public void addZine(int pNewID, String pName, boolean pExtraCoverprint, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) throws Exception{
 		boolean vDoubledID = false;
 		ArrayList<Integer> vExistingCountIDs = new ArrayList<Integer>();
 		
@@ -255,7 +256,7 @@ public class DataSet extends NameElement {
 					vExistingCountIDs.add(Integer.valueOf( vCount.getId() ));
 				}
 				
-				if ((vDoubledID == false) && (pNewID != -1) && (!hasZine(pNewID))) zines.add(new ZineElement(pNewID, pName, pQuota, pDistributedOffset, pCategoryID, pFilePath, pCounts));
+				if ((vDoubledID == false) && (pNewID != -1) && (!hasZine(pNewID))) zines.add(new ZineElement(pNewID, pName, pExtraCoverprint, pQuota, pDistributedOffset, pCategoryID, pFilePath, pCounts));
 				else throw new Exception("02b; aZi,DaS");
 			} else throw new Exception("02; aZi,DaS");
 		} else throw new Exception("04; aZi,DaS");

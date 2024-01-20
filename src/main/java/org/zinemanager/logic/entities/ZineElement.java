@@ -1,4 +1,4 @@
-/**	ZineManager v0.0	Wf	10.10.2023
+/**	ZineManager v0.2	Wf	20.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -29,6 +29,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class ZineElement extends NameElement {
+	@JsonProperty("extraCoverprint")
+	protected boolean extracoverprint;
 	@JsonProperty("quota")
 	protected int quota;
 	@JsonProperty("distributedOffset")
@@ -40,11 +42,13 @@ public class ZineElement extends NameElement {
 	@JsonProperty("counts")
 	protected ArrayList<DatedCount> counts;
 	
-	/**	Wf	02.09.2023
+	/**	Wf	20.01.2024
 	 * 
 	 */
 	public ZineElement() {
 		super();
+		
+		extracoverprint = true;
 		
 		quota = 0;
 		distributedOffset = 0;
@@ -54,15 +58,15 @@ public class ZineElement extends NameElement {
 		counts = new ArrayList<DatedCount>();
 	}
 	
-	/**	Wf	02.09.2023
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
 	 */
 	public ZineElement(int pID, String pName, String pFilePath) {
-		this(pID, pName, 0, 0, -1, pFilePath, new ArrayList<DatedCount>());
+		this(pID, pName, true, 0, 0, -1, pFilePath, new ArrayList<DatedCount>());
 	}
-	/**	Wf	02.09.2032
+	/**	Wf	20.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
@@ -72,10 +76,12 @@ public class ZineElement extends NameElement {
 	 * @param pFilePath
 	 * @param pCounts
 	 */
-	public ZineElement(int pID, String pName, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) {
+	public ZineElement(int pID, String pName, boolean pExtraCoverprint, int pQuota, int pDistributedOffset, int pCategoryID, String pFilePath, ArrayList<DatedCount> pCounts) {
 		super(pID, pName);
 		
 		try {
+			setExtracoverprint(pExtraCoverprint);
+			
 			setQuota(pQuota);
 			setDistributedOffset(pDistributedOffset);
 			setCategoryID(pCategoryID);
@@ -86,6 +92,14 @@ public class ZineElement extends NameElement {
 	}
 	
 //--------------------------------------------------------------------------------------------------------
+	
+	/**	Wf	20.01.2024
+	 * 
+	 * @return
+	 */
+	public boolean isExtracoverprint() {
+		return extracoverprint;
+	}
 	
 	/**	Wf	01.09.2023
 	 * 
@@ -167,6 +181,14 @@ public class ZineElement extends NameElement {
 	public void setName(String pName) throws Exception{
 		if ((pName != null) && (!pName.equals(""))) name = pName;
 		else throw new Exception("02; sNa,ZiL");
+	}
+	
+	/**	Wf	20.01.2024
+	 * 
+	 * @param pHasExtraCoverprint
+	 */
+	public void setExtracoverprint(boolean pHasExtraCoverprint) {
+		extracoverprint = pHasExtraCoverprint;
 	}
 	
 	/**	Wf	01.09.2023
@@ -352,13 +374,13 @@ public class ZineElement extends NameElement {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	03.09.2023
+	/**	Wf	20.01.2024
 	 * 
 	 */
 	public ZineElement clone(int pID) throws Exception{
 		ZineElement vRet;
 		
-		if (pID >= -1) vRet = new ZineElement(pID, name, quota, distributedOffset, categoryID, filePath, getCountsCopy());
+		if (pID >= -1) vRet = new ZineElement(pID, name, extracoverprint, quota, distributedOffset, categoryID, filePath, getCountsCopy());
 		else throw new Exception("02; clo,ZiE");
 		
 		return vRet;

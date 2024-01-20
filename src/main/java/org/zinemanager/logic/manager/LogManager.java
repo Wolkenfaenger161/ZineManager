@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	20.11.2023
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	logic.manager
  * 	LogManager
@@ -23,7 +23,7 @@ import java.time.LocalTime;
 import org.zinemanager.MainManager;
 
 public abstract class LogManager {
-	private static double version = 0.1;
+	private static double version = 0.2;
 	private static String logfile;
 	
 	private static MainManager mainManager;
@@ -88,6 +88,14 @@ public abstract class LogManager {
 				}
 			}catch(Exception ex) {LogManager.handleException(ex);}
 		}
+	}
+	
+	/**	Wf	19.01.2024
+	 * 
+	 * @throws Exception
+	 */
+	public static void clearLogs() throws Exception{
+		databaseManager.clearLogs(logfile);
 	}
 	
 	//----------------------------------------------------------------------------------------------------

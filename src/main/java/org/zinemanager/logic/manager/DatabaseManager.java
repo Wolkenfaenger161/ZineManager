@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.01.2024
+/**	ZineManager v0.2	Wf	19.01.2024
  * 
  * 	logic.manager
  * 	  DatabaseManager
@@ -158,7 +158,7 @@ public class DatabaseManager {
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	12.11.2023
+	/**	Wf	19.01.2024
 	 * 
 	 * @param pZineManagerSettings
 	 * @throws Exception
@@ -166,17 +166,19 @@ public class DatabaseManager {
 	public void saveZineManagerSettings(ZineManagerSettings pZineManagerSettings) throws Exception {
 		ZineManagerSettings vCloned = pZineManagerSettings.clone();
 		
-		if (!pZineManagerSettings.getCurrentDataSetPath().endsWith(".xml")) vCloned.setCurrentDataSetPath( loadZineManagerSettings().getCurrentDataSetPath() );
-		
+		try {
+			if (!pZineManagerSettings.getCurrentDataSetPath().endsWith(".xml")) vCloned.setCurrentDataSetPath( loadZineManagerSettings().getCurrentDataSetPath() );
+		}catch(Exception ex) { if (ex.getMessage() != "21; lOfXML,DaM") throw ex; }
+			
 		saveObjectAsXML(zineManagerSettingPath, vCloned);
 	}
-	/**	Wf	18.01.2024
+	/**	Wf	19.01.2024
 	 * 
 	 * @param pPrintManagerSettings
 	 * @throws Exception
 	 */
 	public void savePrintManagerSettings(PrintManagerSettings pPrintManagerSettings) throws Exception {
-		saveObjectAsXML(zineManagerSettingPath, pPrintManagerSettings);
+		saveObjectAsXML(printManagerSettingPath, pPrintManagerSettings);
 	}
 	
 	//-----
@@ -291,6 +293,17 @@ public class DatabaseManager {
 		LogManager.createLogEntry("Start deleting Dataset");
 		if ((pFilePath != null) && (pFilePath != "")) removeFile(pFilePath);
 		else throw new Exception("04/02; lDS,DaM");
+	}
+	
+	/**	Wf	19.01.2024
+	 * 
+	 * @param pCurLogFilePath
+	 * @throws Exception
+	 */
+	public void clearLogs(String pCurLogFilePath) throws Exception{
+		for (File vLog : logDirectory.listFiles(pPathname -> {return pPathname.getName().contains(".txt");})) {
+			if (!pCurLogFilePath.equals(vLog.getName())) removeFile(vLog.getAbsolutePath());
+		}
 	}
 	
 //--------------------------------------------------------------------------------------------------------
