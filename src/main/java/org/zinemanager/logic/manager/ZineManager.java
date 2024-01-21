@@ -1,4 +1,4 @@
-/**	ZineManager v0.2	Wf	20.01.2024
+/**	ZineManager v0.2	Wf	21.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -869,17 +869,30 @@ public class ZineManager extends BasicManager {
 	
 //--------------------------------------------------------------------------------------------------------
 
-	/**Wf	18.01.2024
+	/**Wf	21.01.2024
 	 * 
 	 * @throws Exception
 	 */
 	public void updatePrintedZineCounts(Date pPrintDate) throws Exception{
+		int vTempID = -1;
+		Date vLastDate = null;
 		ArrayList<Integer> vPrintingZineIDs = zinePrintingManager.getPrintingElementIDs();
 		
 		if (pPrintDate != null) {
 			for (Integer vID : vPrintingZineIDs) {
 				if (zinePrintingManager.hasPrintingElementFinishedPrinting(vID) && (zinePrintingManager.getPrintingElementPrinting(vID) > 0)) {
-					addCountToZine(vID, zinePrintingManager.getPrintingElementPrinting(vID), pPrintDate);
+					for (Integer vZineCountID : getZineCountIDs(vID)) {
+						if (vLastDate == null) {
+							vLastDate = getZineCountDate(vID, vZineCountID.intValue());
+							vTempID   = vZineCountID.intValue();
+						} else if (vLastDate.before(getZineCountDate(vID, vZineCountID.intValue()))){
+							vLastDate = getZineCountDate(vID, vZineCountID.intValue());
+							vTempID   = vZineCountID.intValue();
+						}
+					}
+					
+					addCountToZine(vID, zinePrintingManager.getPrintingElementPrinting(vID) 
+							+ (vLastDate != null ? getZineCountValue(vID, vTempID) : 0 ), pPrintDate);
 				}
 			}
 		}else throw new Exception("04; uPZC,ZiM");
