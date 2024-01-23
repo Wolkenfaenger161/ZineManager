@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	17.01.2024
+/**	ZineManager v0.2	Wf	23.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -19,12 +19,16 @@
 
 package org.zinemanager.logic.entities;
 
+import javax.print.attribute.standard.Sides;
+
 public class PrintingElement extends NameElement {
 	protected boolean extracoverprint, printingcover, finishedprinting;
 	protected int quota, current, printing;
 	protected String filePath;
 	
-	/**	Wf	17.01.2024
+	protected Sides doublesidePrintart;
+	
+	/**	Wf	23.01.2024
 	 * 
 	 */
 	public PrintingElement() {
@@ -39,42 +43,47 @@ public class PrintingElement extends NameElement {
 		printing = -1;
 		
 		filePath = "";
+		
+		doublesidePrintart = null;
 	}
 	
-	/**	Wf	16.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
 	 * @param pFilePath
+	 * @param pDoublesidePrintart
 	 * @param pPrinting
 	 */
-	public PrintingElement(int pID, String pName, String pFilePath, int pPrinting) {
-		this(pID, pName, pFilePath, -1, -1, pPrinting);
+	public PrintingElement(int pID, String pName, String pFilePath, Sides pDoublesidePrintart, int pPrinting) {
+		this(pID, pName, pFilePath, pDoublesidePrintart, -1, -1, pPrinting);
 	}
-	/**	Wf	17.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
 	 * @param pFilePath
+	 * @param pDoublesidePrintart
 	 * @param pQuota
 	 * @param pCurrent
 	 * @param pPrinting
 	 */
-	public PrintingElement(int pID, String pName, String pFilePath, int pQuota, int pCurrent, int pPrinting) {
-		this(pID, pName, pFilePath, pQuota, pCurrent, pPrinting, true, true);
+	public PrintingElement(int pID, String pName, String pFilePath, Sides pDoublesidePrintart, int pQuota, int pCurrent, int pPrinting) {
+		this(pID, pName, pFilePath, pDoublesidePrintart, pQuota, pCurrent, pPrinting, true, true);
 	}
-	/**	Wf	17.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pID
 	 * @param pName
 	 * @param pFilePath
+	 * @param pDoublesidePrintart
 	 * @param pQuota
 	 * @param pCurrent
 	 * @param pPrinting
 	 * @param pHasExtracoverPrint
 	 * @param pIsPrintingCover
 	 */
-	public PrintingElement(int pID, String pName, String pFilePath, int pQuota, int pCurrent, int pPrinting, boolean pHasExtracoverPrint, boolean pIsPrintingCover) {
+	public PrintingElement(int pID, String pName, String pFilePath, Sides pDoublesidePrintart, int pQuota, int pCurrent, int pPrinting, boolean pHasExtracoverPrint, boolean pIsPrintingCover) {
 		super(pID, pName);
 		
 		extracoverprint  = pHasExtracoverPrint;
@@ -86,6 +95,8 @@ public class PrintingElement extends NameElement {
 		printing = pPrinting;
 		
 		filePath = pFilePath;
+		
+		doublesidePrintart = pDoublesidePrintart;
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -140,6 +151,14 @@ public class PrintingElement extends NameElement {
 	 */
 	public String getFilePath() {
 		return filePath;
+	}
+	
+	/**	Wf	23.01.2024
+	 * 
+	 * @return
+	 */
+	public Sides getDoublesidePrintart() {
+		return doublesidePrintart;
 	}
 	
 	//----------------------------------------------------------------------------------------------------
@@ -203,16 +222,16 @@ public class PrintingElement extends NameElement {
 		if (pFilePath != null) filePath = pFilePath;
 		else throw new Exception("02; sFP,PrE");
 	}
-	
+		
 //--------------------------------------------------------------------------------------------------------
 
-	/**	Wf	17.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 */
 	public PrintingElement clone(int pID) throws Exception{
 		PrintingElement vRet;
 		
-		if (pID >= -1) vRet = new PrintingElement(pID, name, filePath, quota, current, printing, extracoverprint, printingcover);
+		if (pID >= -1) vRet = new PrintingElement(pID, name, filePath, doublesidePrintart, quota, current, printing, extracoverprint, printingcover);
 		else throw new Exception("02; clo,PrE");
 		
 		return vRet;

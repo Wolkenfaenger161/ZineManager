@@ -1,4 +1,4 @@
-/**	ZineManager v0.1	Wf	18.01.2024
+/**	ZineManager v0.2	Wf	23.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -284,7 +284,7 @@ public class ZinePrintingManager extends BasicManager {
 		return vRet;
 	}
 	
-	/**	Wf	03.12.2023
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pZineElement
 	 * @throws Exception
@@ -306,7 +306,7 @@ public class ZinePrintingManager extends BasicManager {
 				vPrintNum = pZineElement.getQuota() - vCurNum;
 				
 				vNewPrintingElement = new PrintingElement(pZineElement.getId(), pZineElement.getName(), pZineElement.getFilePath(), 
-														  pZineElement.getQuota(), vCurNum, vPrintNum);
+														  pZineElement.getDoublesidePrintart(), pZineElement.getQuota(), vCurNum, vPrintNum);
 				
 				printingElements.add(vNewPrintingElement);
 			} else throw new Exception ("02; aPE,ZPM");
@@ -436,7 +436,7 @@ public class ZinePrintingManager extends BasicManager {
 		});
 	}
 	
-	/**	Wf	18.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pID
 	 * @throws Exception
@@ -465,6 +465,11 @@ public class ZinePrintingManager extends BasicManager {
 				vPageFormat = printJob.defaultPage();
 				
 				vPrintAttributes.add(new Copies(vPrintingElement.getPrinting()));
+				
+				if ((vPrintingElement.getDoublesidePrintart() != null) && (vPrintingElement.getDoublesidePrintart() != settingManager.getDoublesidePrintart())) {
+					vPrintAttributes.remove(settingManager.getDoublesidePrintart());
+					vPrintAttributes.add( vPrintingElement.getDoublesidePrintart() );
+				}
 				
 				if (isRetanclesGreater(vDocument.getPage(0).getMediaBox(), PDRectangle.A5)) {
 					vDocument.getPage(0).setMediaBox(PDRectangle.A4);

@@ -1,4 +1,4 @@
-/**	ZineManager v0.2	Wf	20.01.2024
+/**	ZineManager v0.2	Wf	23.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -23,6 +23,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
+import javax.print.attribute.standard.Sides;
+
 import org.zinemanager.logic.manager.LogManager;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -39,10 +41,14 @@ public class ZineElement extends NameElement {
 	protected int categoryID;
 	@JsonProperty("filePath")
 	protected String filePath;
+	
+	@JsonIgnore
+	protected Sides doublesidePrintart;
+	
 	@JsonProperty("counts")
 	protected ArrayList<DatedCount> counts;
 	
-	/**	Wf	20.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 */
 	public ZineElement() {
@@ -56,6 +62,8 @@ public class ZineElement extends NameElement {
 		
 		filePath = "";
 		counts = new ArrayList<DatedCount>();
+		
+		doublesidePrintart = null;
 	}
 	
 	/**	Wf	20.01.2024
@@ -173,6 +181,22 @@ public class ZineElement extends NameElement {
 		return vRet;
 	}
 	
+	/**	Wf	23.01.2024
+	 * 
+	 * @return
+	 */
+	public Sides getDoublesidePrintart() {
+		return doublesidePrintart;
+	}
+	/**	Wf	23.01.2024
+	 * 
+	 * @return
+	 */
+	@JsonProperty("doublesidePrintart")
+	public int getDoublesidePrintartSerialitazion() {
+		return ( (doublesidePrintart == null) ? 0 : ((doublesidePrintart == Sides.DUPLEX) ? 1 : 0 ) );
+	}
+	
 	//----------------------------------------------------------------------------------------------------
 	
 	/**	Wf	03.09.2023
@@ -270,6 +294,28 @@ public class ZineElement extends NameElement {
 			
 			counts = pCounts;
 		} else throw new Exception("04; sCos,ZiE");
+	}
+	
+	/**	Wf	23.01.2024
+	 * 
+	 * @param pDoublesidePrintart
+	 * @throws Exception
+	 */
+	public void setDoublesidePrintart(Sides pDoublesidePrintart) throws Exception{
+		if ((pDoublesidePrintart == null) || ( pDoublesidePrintart == Sides.DUPLEX) || (pDoublesidePrintart == Sides.TUMBLE))
+			doublesidePrintart = pDoublesidePrintart;
+		else throw new Exception("02; sDP,ZiE");
+	}
+	/**	Wf	23.01.2024
+	 * 
+	 * @param pDoublesidePrintartSerilitazion
+	 * @throws Exception
+	 */
+	public void setDoublesidePrintartSerialitazion(int pDoublesidePrintartSerilitazion) throws Exception{
+		if (pDoublesidePrintartSerilitazion == 0) 	   doublesidePrintart = null;
+		else if (pDoublesidePrintartSerilitazion == 1) doublesidePrintart = Sides.DUPLEX;
+		else if (pDoublesidePrintartSerilitazion == 2) doublesidePrintart = Sides.TUMBLE;
+		else throw new Exception("02; sDPS,ZiE");
 	}
 	
 	//----------------------------------------------------------------------------------------------------

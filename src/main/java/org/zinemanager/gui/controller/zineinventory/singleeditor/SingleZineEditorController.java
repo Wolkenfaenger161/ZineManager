@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	20.01.2024
+/**	ZineManager v0.2		Wf	23.01.2024
  * 	
  * 	gui.controller.zineinventory.multieditor
  * 	  BasicController
@@ -26,6 +26,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.print.attribute.standard.Sides;
 
 import org.zinemanager.gui.controller.ParentControllerInterface;
 import org.zinemanager.gui.stages.zineinventory.singleeditor.SingleZinePathEditorStage;
@@ -57,7 +59,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	@FXML
 	private Spinner<Integer> spQuota, spDistributedOffset;
 	@FXML
-	private ChoiceBox<NameTableElement> cbCategory;
+	private ChoiceBox<NameTableElement> cbCategory, cbDoublesidePrintart;
 	@FXML
 	private CheckBox cbExtracoverPrint;
 	
@@ -68,11 +70,11 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	@FXML
 	private TableColumn<ZineCountTableElement, Date> tcDate;
 	
-	private ObservableList<NameTableElement> liCategories;
+	private ObservableList<NameTableElement> liCategories, liDoublesidePrintarts;
 	private ObservableList<ZineCountTableElement> liCounts;
 	
 	
-	/**	Wf	30.09.2023
+	/**	Wf	23.01.2024
 	 * 
 	 */
 	public SingleZineEditorController() {
@@ -82,11 +84,16 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		
 		liCategories = null;
 		liCounts     = null;
+		
+		liDoublesidePrintarts = FXCollections.observableArrayList();
+		liDoublesidePrintarts.add(new NameTableElement(0, "Default"));
+		liDoublesidePrintarts.add(new NameTableElement(1, "Duplexdruck (lange Kante)"));
+		liDoublesidePrintarts.add(new NameTableElement(2, "Tumpledruck (kurze Kante)"));
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	20.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pStage
 	 * @throws Exception
@@ -134,6 +141,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		
 		liCategories.setAll( generateNewNameTableElementList(basicManager.getCategoryIDs(), true, pID -> {return basicManager.getCategoryName(pID);}, null) );
 		
+		cbDoublesidePrintart.setItems(liDoublesidePrintarts);
+		
 		if (editObjectID != -1) {
 			btProgress.setText("Ändern");
 
@@ -170,7 +179,13 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 					else vRet = 0;
 						
 					return vRet;});
-		}else cbExtracoverPrint.setSelected( basicManager.getSettingManager().isDeafultExtracoverPrint() );
+			
+			cbDoublesidePrintart.getSelectionModel().select( (basicManager.getZineDoublesidePrintart(editObjectID)) != null ? 
+									(basicManager.getZineDoublesidePrintart(editObjectID) == Sides.DUPLEX ? 1 : 2 ) : 0);
+		}else {
+			cbExtracoverPrint.setSelected( basicManager.getSettingManager().isDeafultExtracoverPrint() );
+			cbDoublesidePrintart.getSelectionModel().select(0);
+		}
 			
 		setEnabledObjectInformations(true);
 	}
@@ -224,7 +239,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 	
 	//---------------------------------------------------------------------------------------------------
 	
-	/**	Wf	20.01.2024
+	/**	Wf	23.01.2024
 	 * 	
 	 */
 	@FXML
@@ -233,6 +248,7 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 		NameTableElement vCurSelCat;
 		String vName, vFilePath;
 		int vCategoryID, vQuota, vDistributedOffset, vCurCountID, vCurID;
+		Sides vDoublesidePrintart = null;
 		
 		ArrayList<Integer> vZineCountIDs;
 		
@@ -247,10 +263,14 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 				vQuota = spQuota.getValue().intValue();
 				vDistributedOffset = spDistributedOffset.getValue().intValue();
 				
+				if (cbDoublesidePrintart.getSelectionModel().getSelectedItem().getId() == 1) 	  vDoublesidePrintart = Sides.DUPLEX;
+				else if (cbDoublesidePrintart.getSelectionModel().getSelectedItem().getId() == 2) vDoublesidePrintart = Sides.TUMBLE;
+				
 				if (editObjectID == -1) {
 					vCurID = basicManager.addZine(vName, vQuota, vDistributedOffset, vCategoryID, vFilePath);
 					
 					basicManager.setZineExtraCoverprint(vCurID, cbExtracoverPrint.isSelected() );
+					basicManager.setZineDoublesidePrintart(vCurID, vDoublesidePrintart);
 					
 					for (ZineCountTableElement vZineCount : liCounts) {
 						basicManager.addCountToZine(vCurID, vZineCount.getCount(), vZineCount.getDate());
@@ -263,6 +283,8 @@ public class SingleZineEditorController<ParentController extends ParentControlle
 					
 					basicManager.setZineQuota(editObjectID, vQuota);
 					basicManager.setZineDistributedOffset(editObjectID, vDistributedOffset);
+					
+					basicManager.setZineDoublesidePrintart(editObjectID, vDoublesidePrintart);
 										
 					vZineCountIDs = basicManager.getZineCountIDs(editObjectID);
 					for (Integer vOldID : vZineCountIDs) {

@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	20.01.2024
+/**	ZineManager v0.2		Wf	23.01.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -56,7 +56,7 @@ public class SettingManagerController<ParentController extends ParentControllerI
 	
 	private ObservableList<NameTableElement> liDoublesidePrintart;
 	
-	/**	Wf	20.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 */
 	public SettingManagerController() {
@@ -64,8 +64,8 @@ public class SettingManagerController<ParentController extends ParentControllerI
 		
 		liDoublesidePrintart = FXCollections.observableArrayList();
 		
-		liDoublesidePrintart.add(new NameTableElement(0, "Duplex druck (lange Kante)"));
-		liDoublesidePrintart.add(new NameTableElement(1, "Tumple druck (kurze Kante)"));
+		liDoublesidePrintart.add(new NameTableElement(0, "Duplexdruck (lange Kante)"));
+		liDoublesidePrintart.add(new NameTableElement(1, "Tumpledruck (kurze Kante)"));
 	}
 	
 	//----------------------------------------------------------------------------------------------------

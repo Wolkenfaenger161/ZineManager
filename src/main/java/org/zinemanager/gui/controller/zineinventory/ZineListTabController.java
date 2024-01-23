@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	20.01.2024
+/**	ZineManager v0.2		Wf	23.01.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -298,7 +298,7 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 		}else LogManager.handleException(new Exception("04; sea,ZLTC"));
 	}
 	
-	/**	Wf	20.01.2024
+	/**	Wf	23.01.2024
 	 * 
 	 * @param pSearchText
 	 * @param pSearchCategory
@@ -309,8 +309,8 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 			boolean vRet = true;
 			
 			if (((pSearchCategory == 1) || (pSearchCategory == 2)) && (!pSearchText.equals(""))){
-				if (pSearchCategory == 1) vRet = pZineListTableElement.getName().contains(pSearchText);
-				else					  vRet = pZineListTableElement.getCategoryName().contains(pSearchText); 
+				if (pSearchCategory == 1) vRet = pZineListTableElement.getName().toLowerCase().contains(pSearchText.toLowerCase());
+				else					  vRet = pZineListTableElement.getCategoryName().toLowerCase().contains(pSearchText.toLowerCase()); 
 			}
 			
 			return vRet;

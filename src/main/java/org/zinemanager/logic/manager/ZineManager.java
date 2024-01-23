@@ -1,4 +1,4 @@
-/**	ZineManager v0.2	Wf	21.01.2024
+/**	ZineManager v0.2	Wf	23.01.2024
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -25,6 +25,8 @@ package org.zinemanager.logic.manager;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+
+import javax.print.attribute.standard.Sides;
 
 import org.zinemanager.logic.entities.Category;
 import org.zinemanager.logic.entities.DataSet;
@@ -315,6 +317,16 @@ public class ZineManager extends BasicManager {
 		else throw new Exception("02; gZCIDs,ZiM");
 	}
 	
+	/**	Wf	23.01.2024
+	 * 
+	 * @param pID
+	 * @return
+	 * @throws Exception
+	 */
+	public Sides getZineDoublesidePrintart(int pID) throws Exception{
+		return getZine(pID).getDoublesidePrintart();
+	}
+	
 	//-----
 	
 	/**	Wf	03.09.2023
@@ -471,6 +483,16 @@ public class ZineManager extends BasicManager {
 			if (vCount != null) vCount.setDate(pCountDate);
 			else throw new Exception("04b; sZCD,ZiM");
 		}else throw new Exception("04; sZCD,ZiM");
+	}
+	
+	/**	Wf	23.01.2024
+	 * 
+	 * @param pZineID
+	 * @param pDoublesidePrintart
+	 * @throws Exception
+	 */
+	public void setZineDoublesidePrintart(int pZineID, Sides pDoublesidePrintart) throws Exception{
+		getZine(pZineID).setDoublesidePrintart(pDoublesidePrintart);
 	}
 	
 	//-----

@@ -69,9 +69,19 @@
                      <content>
                         <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
                            <children>
-                              <Label minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" text="Extra Coverdruck:" />
+                              <VBox minHeight="-Infinity" minWidth="-Infinity">
+                                 <children>
+                                    <Label minHeight="-Infinity" minWidth="-Infinity" prefHeight="30.0" text="Extra Coverdruck:" />
+                                    <Label text="Beiseitige Druckart:" />
+                                 </children>
+                              </VBox>
                               <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
-                              <CheckBox fx:id="cbExtracoverPrint" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="20.0" />
+                              <VBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity">
+                                 <children>
+                                    <CheckBox fx:id="cbExtracoverPrint" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="25.0" />
+                                    <ChoiceBox fx:id="cbDoublesidePrintart" maxWidth="150.0" minHeight="-Infinity" minWidth="-Infinity" />
+                                 </children>
+                              </VBox>
                            </children>
                         </HBox>
                      </content>
