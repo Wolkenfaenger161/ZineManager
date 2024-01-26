@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	23.01.2024
+/**	ZineManager v0.2		Wf	26.01.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -26,6 +26,7 @@ import org.zinemanager.gui.tableelements.NameTableElement;
 import org.zinemanager.gui.tableelements.ZineListTableElement;
 import org.zinemanager.logic.manager.LogManager;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -34,6 +35,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.control.Separator;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -41,6 +43,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.util.converter.IntegerStringConverter;
 
 public class ZineListTabController extends ChildController<MainZineInventoryController<? extends ParentControllerInterface>>
@@ -56,6 +60,9 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	private Button btSearch;
 	@FXML
 	private ChoiceBox<NameTableElement> cbSearchCategory;
+	
+	@FXML
+	private Separator seSeparator;
 	
 	@FXML
 	private TableView<ZineListTableElement> tvZineList;
@@ -254,14 +261,33 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	
 	//-----
 	
-	/**	Wf	02.10.2023
+	/**	Wf	26.01.2024
 	 * 	
 	 * @param pTitle
 	 * @throws Exception
 	 */
-	public void setZineListTitle(String pTitle) throws Exception {
+	public void setZineListTitle(String pTitle) throws Exception {		
 		if (pTitle != null) lTabTitle.setText(pTitle);
 		else throw new Exception("04, sZLT,ZLTC");
+		Platform.runLater(() -> {
+			HBox vHBox = (HBox) lTabTitle.getParent();
+			VBox vVBox = (VBox) vHBox.getParent();
+			
+			double vPaddings = vVBox.getPadding().getLeft()+ vVBox.getPadding().getRight();
+			
+			if (vVBox.getWidth() > 580) vVBox.setPrefWidth(580);
+			
+			if ((vHBox.getWidth()) > (580 - vPaddings )) vHBox.setPrefWidth( 580 - vPaddings );
+			
+			if ( (lTabTitle.getWidth()) > (580 - vPaddings - (2*lZineListCount.getWidth()) - (2*seSeparator.getWidth()) ) )				
+				lTabTitle.setPrefWidth( 580 - vPaddings - (2*lZineListCount.getWidth()) - (2*seSeparator.getWidth()) );
+			
+			/*Platform.runLater(() -> {
+				System.out.println("VBox: "+vVBox.getWidth());
+				System.out.println("HBox: "+vHBox.getWidth());
+			});*/
+		});
+		
 	}
 	
 	/**	Wf	20.01.2024

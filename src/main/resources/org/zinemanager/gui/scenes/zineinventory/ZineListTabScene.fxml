@@ -18,17 +18,17 @@
       <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
    </padding>
    <children>
-      <HBox alignment="CENTER">
+      <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
          <children>
-            <Separator minHeight="-Infinity" minWidth="-Infinity" prefWidth="150.0" visible="false" />
-            <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
-            <Label fx:id="lTabTitle" minHeight="-Infinity" minWidth="-Infinity" text="Zinelist Title">
+            <Separator minHeight="-Infinity" minWidth="-Infinity" prefWidth="85.0" visible="false" HBox.hgrow="NEVER" />
+            <Separator fx:id="seSeparator" minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
+            <Label fx:id="lTabTitle" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" text="Zinelist Title" HBox.hgrow="NEVER">
                <font>
                   <Font name="System Bold" size="18.0" />
                </font>
             </Label>
             <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
-            <Label fx:id="lZineListCount" alignment="CENTER_RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefWidth="150.0" text="Anzahl Zines:" />
+            <Label fx:id="lZineListCount" alignment="CENTER_RIGHT" minHeight="-Infinity" minWidth="-Infinity" prefWidth="85.0" text="Anzahl Zines:" HBox.hgrow="NEVER" />
          </children>
       </HBox>
       <HBox alignment="TOP_RIGHT" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0">

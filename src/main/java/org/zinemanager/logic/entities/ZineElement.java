@@ -1,4 +1,4 @@
-/**	ZineManager v0.2	Wf	23.01.2024
+/**	ZineManager v0.2	Wf	26.01.2024
  * 
  * 	logic.entities
  * 	IDElement
@@ -442,7 +442,7 @@ public class ZineElement extends NameElement {
 	public boolean isFilePathValid() {
 		return isFilePathValid(filePath);
 	}
-	/**	Wf	10.10.2023
+	/**	Wf	26.01.2024
 	 * 
 	 * @param pFilePath
 	 * @return
@@ -454,7 +454,7 @@ public class ZineElement extends NameElement {
 		if (pFilePath != null) {
 			vTemp = new File(pFilePath);
 			
-			vRet = ((vTemp.exists() && vTemp.isFile() && vTemp.canRead() && pFilePath.endsWith(".pdf")) || (pFilePath.equals("")));
+			vRet = ((vTemp.exists() && vTemp.isFile() && vTemp.canRead() && pFilePath.toLowerCase().endsWith(".pdf")) || (pFilePath.equals("")));
 		}
 		
 		return vRet;

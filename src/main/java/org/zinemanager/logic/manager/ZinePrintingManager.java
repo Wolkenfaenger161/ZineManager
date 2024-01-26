@@ -284,7 +284,7 @@ public class ZinePrintingManager extends BasicManager {
 		return vRet;
 	}
 	
-	/**	Wf	23.01.2024
+	/**	Wf	26.01.2024
 	 * 
 	 * @param pZineElement
 	 * @throws Exception
@@ -303,7 +303,7 @@ public class ZinePrintingManager extends BasicManager {
 					}
 				}
 				
-				vPrintNum = pZineElement.getQuota() - vCurNum;
+				vPrintNum = Math.max(pZineElement.getQuota() - vCurNum, 0);
 				
 				vNewPrintingElement = new PrintingElement(pZineElement.getId(), pZineElement.getName(), pZineElement.getFilePath(), 
 														  pZineElement.getDoublesidePrintart(), pZineElement.getQuota(), vCurNum, vPrintNum);

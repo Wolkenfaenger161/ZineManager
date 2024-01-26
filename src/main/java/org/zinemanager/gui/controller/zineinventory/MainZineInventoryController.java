@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	20.01.2024
+/**	ZineManager v0.2		Wf	26.01.2024
  * 	
  * 	gui.controller.zineinventory
  * 	  BasicController
@@ -86,7 +86,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 	private GUIListElementFormater<ZineListTableElement> pZineListTableElementGenerater;
 	private GUITableElementSetter<ZineListTableElement> pZineListTableElementSetter;
 	
-	/**	Wf	12.11.2023
+	/**	Wf	26.01.2024
 	 * 
 	 */
 	public MainZineInventoryController(){
@@ -140,6 +140,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 			
 			vTempID 	  = basicManager.getZineCategoryID(vElementID);
 			pTableElement.setCategoryName( vTempID != -1 ? basicManager.getCategoryName(vTempID) : "" ); 
+			pTableElement.setQuota( basicManager.getZineQuota(vElementID) );
 			
 			for (Integer vZineCountID : vZineCountIDs) {
 				if (vLastDate == null) {
