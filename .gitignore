@@ -5,8 +5,6 @@
 *.xml2
 
 build/classes
-build/distributions/*
-!build/distributions/*.???
 build/generated
 build/resources
 build/scripts
