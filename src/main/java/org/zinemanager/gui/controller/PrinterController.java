@@ -1,4 +1,4 @@
-/**	ZineManager v0.1		Wf	18.01.2024
+/**	ZineManager v0.2		Wf	15.07.2024
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -68,7 +68,7 @@ public class PrinterController extends BasicController {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	18.01.2024
+	/**	Wf	15.07.2024
 	 * 
 	 * @param pTitle
 	 * @param pZinePrintManager
@@ -97,6 +97,8 @@ public class PrinterController extends BasicController {
 			
 			LogManager.handleMessage("Bitte prüfen, ob genügend Coverpapier eingelegt ist.\nEs werden "+ zineprintingManager.getTotalCoverPrintingNumber() + " Covers gedruckt.");
 		}else startNextPrint();
+		
+		update();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
