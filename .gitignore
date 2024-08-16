@@ -1,5 +1,4 @@
 .gradle
-.settings
 
 *.xml
 *.xml2
@@ -14,5 +13,6 @@ build/gluonfx/x86_64-linux/gensrc
 build/gluonfx/x86_64-linux/gvm
 
 bin/test
-src/test
+src/test/java/org/*
 /bin/
+/build/
