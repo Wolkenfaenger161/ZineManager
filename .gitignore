@@ -1,4 +1,5 @@
 .gradle
+.settings
 
 *.xml
 *.xml2

@@ -1,4 +1,4 @@
-/**	ZineManager v0.2	Wf	23.01.2024
+/**	ZineManager v0.21	Wf	06.01.2025
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -418,7 +418,7 @@ public class ZinePrintingManager extends BasicManager {
 					if (vPrintServieAttributes.containsKey(QueuedJobCount.class)) {
 						vCurQueuedJobCount = ((QueuedJobCount)vPrintServieAttributes.get(QueuedJobCount.class)).getValue();
 						
-						if (vCurQueuedJobCount < lastqueuedjobcount) {
+						if ((vCurQueuedJobCount < lastqueuedjobcount) || (vCurQueuedJobCount == 0 && isPrinting)) {
 							if (vPrintServieAttributes.containsKey(PrinterIsAcceptingJobs.class)) {
 								vIsAcceptingJobs = (PrinterIsAcceptingJobs)vPrintServieAttributes.get(PrinterIsAcceptingJobs.class);
 								
@@ -430,7 +430,7 @@ public class ZinePrintingManager extends BasicManager {
 						isPrinting = false;
 						
 						lastqueuedjobcount = vCurQueuedJobCount;
-					}
+					}else LogManager.handleMessage("Printer doesn't support queuedjobcount");
 				});
 			}
 		});
@@ -447,7 +447,7 @@ public class ZinePrintingManager extends BasicManager {
 		
 		Paper vPaperA4 = new Paper();
 		Paper vPaperA5 = new Paper();
-		
+		LogManager.createLogEntry("PrintSide: "+pPrintSide);
 		vPaperA4.setSize(PDRectangle.A4.getWidth(), PDRectangle.A4.getHeight());
 		vPaperA5.setSize(PDRectangle.A5.getWidth(), PDRectangle.A5.getHeight());
 		
@@ -472,19 +472,19 @@ public class ZinePrintingManager extends BasicManager {
 				}
 				
 				if (isRetanclesGreater(vDocument.getPage(0).getMediaBox(), PDRectangle.A5)) {
-					vDocument.getPage(0).setMediaBox(PDRectangle.A4);
-					vPageFormat.setPaper(vPaperA4);
-				}
-				else {
-					vDocument.getPage(0).setMediaBox(PDRectangle.A5);
+					if (isLandscape(vDocument.getPage(0).getMediaBox())) {
+						vPrintAttributes.add(OrientationRequested.LANDSCAPE);
+						vPageFormat.setOrientation(PageFormat.LANDSCAPE);
+					}
+					//vDocument.getPage(0).setMediaBox(PDRectangle.A4);
+					//vPageFormat.setPaper(vPaperA4);
+				}else {
+					if (!isLandscape(vDocument.getPage(0).getMediaBox())) {
+						vPrintAttributes.add(OrientationRequested.LANDSCAPE);
+						vPageFormat.setOrientation(PageFormat.LANDSCAPE);
+					}
+					//vDocument.getPage(0).setMediaBox(PDRectangle.A5);
 					//vPageFormat.setPaper(vPaperA5);
-				}
-				
-				if (areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A4)) {
-					vPrintAttributes.add(OrientationRequested.PORTRAIT);
-				}else if(areRetanclesEqual(vDocument.getPage(0).getMediaBox(), PDRectangle.A5)) {
-					vPrintAttributes.add(OrientationRequested.LANDSCAPE);
-					vPageFormat.setOrientation(PageFormat.LANDSCAPE);
 				}
 				
 				if (vPrintingElement.hasExtracoverPrint()) {
@@ -553,7 +553,7 @@ public class ZinePrintingManager extends BasicManager {
 		isPrinting = false;
 	}
 	
-	/**	16.01.2024
+	/**	Wf 16.01.2024
 	 * 
 	 * @param pID
 	 * @throws Exception
@@ -575,19 +575,6 @@ public class ZinePrintingManager extends BasicManager {
 	 * @param pRec2
 	 * @return
 	 */
-	private boolean areRetanclesEqual(PDRectangle pRec1, PDRectangle pRec2) {
-		boolean vRet = false;
-		
-		vRet = ((int)pRec1.getHeight() == (int)pRec2.getHeight()) && ((int)pRec1.getWidth() == (int)pRec2.getWidth());
-		
-		return vRet;
-	}
-	/**	Wf	12.12.2023
-	 * 
-	 * @param pRec1
-	 * @param pRec2
-	 * @return
-	 */
 	private boolean isRetanclesGreater(PDRectangle pRec1, PDRectangle pRec2) {
 		boolean vRet = false;
 		
@@ -596,6 +583,19 @@ public class ZinePrintingManager extends BasicManager {
 		else if (((int)pRec1.getHeight() < (int)pRec2.getHeight()) && ((int)pRec1.getWidth() < (int)pRec2.getWidth()))
 			vRet = false;
 		else vRet = (int)(pRec1.getHeight()*pRec1.getWidth()) > (int)(pRec2.getHeight()*pRec2.getWidth());
+		
+		return vRet;
+	}
+	
+	/**	Wf	06.01.2025
+	 * 
+	 * @param pRec
+	 * @return
+	 */
+	private boolean isLandscape(PDRectangle pRec) {
+		boolean vRet = false;
+		
+		if ( (int)pRec.getHeight() < (int)pRec.getWidth() ) vRet = true;
 		
 		return vRet;
 	}

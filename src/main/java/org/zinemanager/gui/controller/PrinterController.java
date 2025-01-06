@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	15.07.2024
+/**	ZineManager v0.21		Wf	06.01.2025
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -68,7 +68,7 @@ public class PrinterController extends BasicController {
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	15.07.2024
+	/**	Wf	06.01.2025
 	 * 
 	 * @param pTitle
 	 * @param pZinePrintManager
@@ -78,7 +78,7 @@ public class PrinterController extends BasicController {
 		printerStage = pPrinterStage;
 		zineprintingManager = pZinePrintManager;
 		lTitle.setText(pTitle);
-		
+		LogManager.handleMessage("Printing Number: Cover "+zineprintingManager.getTotalCoverPrintingNumber()+", Plain "+zineprintingManager.getTotalZinePrintingNumber());
 		totalPrintingNumber = zineprintingManager.getTotalCoverPrintingNumber() + zineprintingManager.getTotalZinePrintingNumber();
 		liZinePrintingIDs = zineprintingManager.getPrintingElementIDs();
 		
@@ -88,17 +88,16 @@ public class PrinterController extends BasicController {
 		else 													   printStatus = 3;
 		isDuplex = zineprintingManager.isDuplex();
 		
-		if (isDuplex) totalPrintingNumber = 2 * totalPrintingNumber;
+		if (!isDuplex) totalPrintingNumber = 2 * totalPrintingNumber;
 		
 		setEnabled(true);
 		
 		if (printStatus == 1) {
 			isPrinting = false;
+			btPause.setText("Starten");
 			
 			LogManager.handleMessage("Bitte prüfen, ob genügend Coverpapier eingelegt ist.\nEs werden "+ zineprintingManager.getTotalCoverPrintingNumber() + " Covers gedruckt.");
 		}else startNextPrint();
-		
-		update();
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -112,7 +111,7 @@ public class PrinterController extends BasicController {
 		btRepeat.setDisable( (((1 <= printStatus) && (printStatus <= 4)) && (!repeatingCurrent)) ? !pEnable : true );
 		btBack.setDisable( !pEnable );
 	}
-	/**	Wf	08.18.2023
+	/**	Wf	08.12.2023
 	 * 
 	 * @param pEnable
 	 */
@@ -135,13 +134,15 @@ public class PrinterController extends BasicController {
 		
 		lProcessName.setText( (printStatus <= 0) ? "" : ( ((1 <= printStatus) && (printStatus <= 4)) ? vPrintStatusTitle : "Fertig" ) );
 		try {
-			vCurID = liZinePrintingIDs.get(curPrintElementIndx);
-			vPrintStatusText += zineprintingManager.getPrintingElementName(vCurID);
-			vPrintStatusText += "("+ zineprintingManager.getPrintingElementPrinting(vCurID) +")";
+			if (curPrintElementIndx != -1) {
+				vCurID = liZinePrintingIDs.get(curPrintElementIndx);
+				vPrintStatusText += zineprintingManager.getPrintingElementName(vCurID);
+				vPrintStatusText += "("+ zineprintingManager.getPrintingElementPrinting(vCurID) +")";
 			
-			if (!isDuplex) {
-				if      ((printStatus == 1) || (printStatus == 3)) vPrintStatusText += " ungerade Seiten";
-				else if ((printStatus == 2) || (printStatus == 4)) vPrintStatusText += " gerade Seiten";
+				if (!isDuplex) {
+					if      ((printStatus == 1) || (printStatus == 3)) vPrintStatusText += " ungerade Seiten";
+					else if ((printStatus == 2) || (printStatus == 4)) vPrintStatusText += " gerade Seiten";
+				}
 			}
 			
 			lPrintStatus.setText( ((1 <= printStatus) && (printStatus <= 4)) ? vPrintStatusText : "" );
@@ -165,15 +166,15 @@ public class PrinterController extends BasicController {
 	
 //--------------------------------------------------------------------------------------------------------
 	
-	/**	Wf	16.01.2024
+	/**	Wf	06.01.2025
 	 * 
 	 */
 	@FXML
 	public void pause() {
 		if ((1 <= printStatus) && (printStatus <= 4)) {
 			if (!isPrinting && !zineprintingManager.isPrinting()) startNextPrint();
+			else isPrinting = !isPrinting;
 			
-			isPrinting = !isPrinting;
 			setEnabled(true);
 			update();
 		}
@@ -206,7 +207,7 @@ public class PrinterController extends BasicController {
 	 */
 	public void startNextPrint() {
 		int vCurID;
-		
+
 		try {
 			if (!repeatingCurrent) {
 				curPrintElementIndx ++;
