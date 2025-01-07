@@ -78,7 +78,7 @@ public class PrinterController extends BasicController {
 		printerStage = pPrinterStage;
 		zineprintingManager = pZinePrintManager;
 		lTitle.setText(pTitle);
-		LogManager.handleMessage("Printing Number: Cover "+zineprintingManager.getTotalCoverPrintingNumber()+", Plain "+zineprintingManager.getTotalZinePrintingNumber());
+		
 		totalPrintingNumber = zineprintingManager.getTotalCoverPrintingNumber() + zineprintingManager.getTotalZinePrintingNumber();
 		liZinePrintingIDs = zineprintingManager.getPrintingElementIDs();
 		
@@ -254,7 +254,9 @@ public class PrinterController extends BasicController {
 			if (!repeatingCurrent) {
 				vProgressValue = ((double)zineprintingManager.getPrintingElementPrinting(vCurID))/((double)totalPrintingNumber);
 				pbPrintProgress.setProgress(pbPrintProgress.getProgress() + vProgressValue);
-			}else if (((printStatus == 3) && (!isDuplex)) || (printStatus == 4)) zineprintingManager.completedPrintingZine(vCurID);
+				
+				if (((printStatus == 3) && (!isDuplex)) || (printStatus == 4)) zineprintingManager.completedPrintingZine(vCurID);
+			}
 			
 			if ((curPrintElementIndx < (liZinePrintingIDs.size()-1)) || (repeatingCurrent)) {
 				if (isPrinting)	startNextPrint();
@@ -264,11 +266,11 @@ public class PrinterController extends BasicController {
 				if ((printStatus == 1) || (printStatus == 2) || ((printStatus == 3) && (!isDuplex))) {
 					curPrintElementIndx = -1;
 					
-					if (!isDuplex) printStatus ++;
-					else printStatus = 3;
+					if (!isDuplex)             printStatus ++;
+					else if (printStatus != 3) printStatus = 3;
 					
 					if ((printStatus == 2) || (printStatus == 4)) LogManager.handleMessage("Bitte gedrucktes Papier umdrehen.\nZweite Seite soll gedruckt werden.");
-					else if (printStatus == 3) LogManager.handleMessage("Bitte normales Papier einlegen.\nEs werden "+ zineprintingManager.getTotalZinePrintingNumber() +" Dateien gedruckt." );
+					else if (printStatus == 3)                    LogManager.handleMessage("Bitte normales Papier einlegen.\nEs werden "+ zineprintingManager.getTotalZinePrintingNumber() +" Dateien gedruckt." );
 				}else printStatus = 5;
 				
 				setEnabled(true);

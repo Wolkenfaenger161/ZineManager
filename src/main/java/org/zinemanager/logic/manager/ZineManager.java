@@ -902,19 +902,25 @@ public class ZineManager extends BasicManager {
 		
 		if (pPrintDate != null) {
 			for (Integer vID : vPrintingZineIDs) {
+				LogManager.handleMessage("ZM B: ID="+vID+", finished="+zinePrintingManager.hasPrintingElementFinishedPrinting(vID)+", printing="+zinePrintingManager.getPrintingElementPrinting(vID));
 				if (zinePrintingManager.hasPrintingElementFinishedPrinting(vID) && (zinePrintingManager.getPrintingElementPrinting(vID) > 0)) {
+					LogManager.handleMessage("ZM C");
 					for (Integer vZineCountID : getZineCountIDs(vID)) {
+						LogManager.handleMessage("ZM D, CountID="+vZineCountID);
 						if (vLastDate == null) {
+							LogManager.handleMessage("ZM E1");
 							vLastDate = getZineCountDate(vID, vZineCountID.intValue());
 							vTempID   = vZineCountID.intValue();
 						} else if (vLastDate.before(getZineCountDate(vID, vZineCountID.intValue()))){
+							LogManager.handleMessage("ZM E2");
 							vLastDate = getZineCountDate(vID, vZineCountID.intValue());
 							vTempID   = vZineCountID.intValue();
 						}
 					}
-					
+					LogManager.handleMessage("ZM F");
 					addCountToZine(vID, zinePrintingManager.getPrintingElementPrinting(vID) 
 							+ (vLastDate != null ? getZineCountValue(vID, vTempID) : 0 ), pPrintDate);
+					LogManager.handleMessage("ZM G");
 				}
 			}
 		}else throw new Exception("04; uPZC,ZiM");

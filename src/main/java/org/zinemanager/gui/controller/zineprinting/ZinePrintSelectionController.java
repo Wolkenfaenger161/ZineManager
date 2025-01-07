@@ -83,6 +83,7 @@ public class ZinePrintSelectionController<ParentController extends ParentControl
 	 */
 	public void closeChildStage() {
 		if (basicManager.getZinePrintingManager().getPrintingElementIDs().size() > 0) {
+
 			try {
 				basicManager.updatePrintedZineCounts(Date.from( LocalDate.now().atStartOfDay().toInstant(ZoneOffset.UTC)));
 			}catch(Exception ex) {LogManager.handleException(ex);}

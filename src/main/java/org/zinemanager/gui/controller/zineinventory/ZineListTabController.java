@@ -1,4 +1,4 @@
-/**	ZineManager v0.2		Wf	26.01.2024
+/**	ZineManager v0.21		Wf	07.01.2025
  * 	
  * 	gui.controller
  * 	  BasicController
@@ -52,7 +52,7 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	private int zineListID;
 	
 	@FXML
-	private Label lTabTitle, lZineListCount;
+	private Label lTabTitle, lZineListCount, lZineListNumberCount;
 	
 	@FXML
 	private TextField tfSearchField;
@@ -92,7 +92,7 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	20.01.2024
+	/**	Wf	06.01.2025
 	 * 
 	 * @param pZineListID
 	 */
@@ -103,7 +103,7 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 		liFilteredZineList = new FilteredList<ZineListTableElement>(liZineList);
 		cbSearchCategory.setItems(liSearchCategoryList);
 		
-		cbSearchCategory.getSelectionModel().select(0);
+		cbSearchCategory.getSelectionModel().select(1);
 		
 		tfSearchField.setOnKeyPressed(pEvent -> {
 			if (pEvent.getCode() == KeyCode.ENTER) search();
@@ -225,12 +225,19 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 	
 	//-----
 	
-	/**	Wf	13.11.2023
+	/**	Wf	07.01.2025
 	 * 
 	 */
 	public void update() {
+		int vZineListNumberCount = 0;
+		
+		for (ZineListTableElement vTemp : liZineList) {
+			vZineListNumberCount += vTemp.getLastCount();
+		}
+		
 		tvZineList.refresh();
 		lZineListCount.setText("Anzahl Zines: "+ liZineList.size());
+		lZineListNumberCount.setText("Gesamte Stückzahl: "+vZineListNumberCount);
 	}
 	
 //--------------------------------------------------------------------------------------------------------
@@ -281,24 +288,26 @@ public class ZineListTabController extends ChildController<MainZineInventoryCont
 			
 			if ( (lTabTitle.getWidth()) > (580 - vPaddings - (2*lZineListCount.getWidth()) - (2*seSeparator.getWidth()) ) )				
 				lTabTitle.setPrefWidth( 580 - vPaddings - (2*lZineListCount.getWidth()) - (2*seSeparator.getWidth()) );
-			
-			/*Platform.runLater(() -> {
-				System.out.println("VBox: "+vVBox.getWidth());
-				System.out.println("HBox: "+vHBox.getWidth());
-			});*/
 		});
 		
 	}
 	
-	/**	Wf	20.01.2024
+	/**	Wf	07.01.2025
 	 * 
 	 * @param pZineListTableElements
 	 */
 	public void setZineListTable(ArrayList<ZineListTableElement> pZineListTableElements) {
+		int vZineListNumberCount = 0;
+		
 		liZineList.setAll(pZineListTableElements);
 		liFilteredZineList.setPredicate( createZineListPredicate(tfSearchField.getText(), cbSearchCategory.getSelectionModel().getSelectedItem().getId()) );
 		
-		lZineListCount.setText("Anzahl: " + liZineList.size());
+		for (ZineListTableElement vTemp : liZineList) {
+			vZineListNumberCount += vTemp.getLastCount();
+		}
+		
+		lZineListCount.setText("Anzahl Zines: " + liZineList.size());
+		lZineListNumberCount.setText("Gesamte Stückzahl: "+vZineListNumberCount);
 	}
 	
 	//----------------------------------------------------------------------------------------------------

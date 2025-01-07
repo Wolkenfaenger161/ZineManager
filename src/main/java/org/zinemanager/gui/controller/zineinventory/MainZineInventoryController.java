@@ -126,7 +126,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 			
 			vTotalDis = basicManager.calculateTotalDistributedValueOfZine(pID);
 			
-			return new ZineListTableElement(pID, basicManager.getZineName(pID), vCategoryName, basicManager.getZineQuota(pID), vLastCount, vCurrentCount, vTotalDis);
+			return new ZineListTableElement(pID, basicManager.getZineName(pID), vCategoryName, (basicManager.getZineQuota(pID) - vLastCount), vLastCount, vCurrentCount, vTotalDis);
 		};
 		pZineListTableElementSetter = pTableElement -> {
 			int vTempID, vElementID;
@@ -140,7 +140,6 @@ public class MainZineInventoryController<ParentController extends ParentControll
 			
 			vTempID 	  = basicManager.getZineCategoryID(vElementID);
 			pTableElement.setCategoryName( vTempID != -1 ? basicManager.getCategoryName(vTempID) : "" ); 
-			pTableElement.setQuota( basicManager.getZineQuota(vElementID) );
 			
 			for (Integer vZineCountID : vZineCountIDs) {
 				if (vLastDate == null) {
@@ -152,6 +151,7 @@ public class MainZineInventoryController<ParentController extends ParentControll
 				}
 			}
 			pTableElement.setLastCount(vLastDate != null ? basicManager.getZineCountValue(vElementID, vTempID) : null );
+			pTableElement.setQuota( basicManager.getZineQuota(vElementID) - pTableElement.getLastCount() );
 			
 			pTableElement.setTotalDistributed(basicManager.calculateTotalDistributedValueOfZine(vElementID));
 		};

@@ -1,4 +1,4 @@
-/**	ZineManager v0.21	Wf	06.01.2025
+/**	ZineManager v0.21	Wf	07.01.2025
  * 
  * 	logic.manager
  * 	  BasicManager
@@ -25,6 +25,7 @@ import java.awt.print.PrinterJob;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.print.PrintService;
 import javax.print.PrintServiceLookup;
@@ -55,7 +56,8 @@ import org.zinemanager.logic.entities.ZineElement;
 import javafx.application.Platform;
 
 public class ZinePrintingManager extends BasicManager {
-	private boolean isPrinting, isDuplex;
+	private boolean isDuplex;
+	private AtomicBoolean isPrinting;
 	
 	private SettingManager settingManager;
 	
@@ -65,12 +67,12 @@ public class ZinePrintingManager extends BasicManager {
 	
 	private ArrayList<PrintingElement> printingElements;
 	
-	/**	Wf	16.01.2024
+	/**	Wf	07.01.2025
 	 * 
 	 * @param pSettingManager
 	 */
 	public ZinePrintingManager(SettingManager pSettingManager) {
-		isPrinting = false;
+		isPrinting = new AtomicBoolean(false);
 		isDuplex = false;
 		
 		settingManager = pSettingManager;
@@ -366,7 +368,7 @@ public class ZinePrintingManager extends BasicManager {
 	 * @return
 	 */
 	public boolean isPrinting() {
-		return isPrinting;
+		return isPrinting.get();
 	}
 	/**	Wf	16.01.2024
 	 * 
@@ -396,7 +398,7 @@ public class ZinePrintingManager extends BasicManager {
 		return printservices != null;
 	}
 	
-	/**	Wf	12.12.2023
+	/**	Wf	07.01.2025
 	 * 
 	 * @param pJobAttentionCallable
 	 * @param pJobFailedCallable
@@ -407,27 +409,30 @@ public class ZinePrintingManager extends BasicManager {
 		printservices.addPrintServiceAttributeListener(new PrintServiceAttributeListener() {
 			private int lastqueuedjobcount = 0;
 			
+			/**	Wf	07.01.2025
+			 * 
+			 */
 			@Override
 			public void attributeUpdate(PrintServiceAttributeEvent pPrintServiceAttributeEvent) {
 				Platform.runLater(() -> {
 					int vCurQueuedJobCount ;
 					
 					PrinterIsAcceptingJobs vIsAcceptingJobs;
-					PrintServiceAttributeSet vPrintServieAttributes = pPrintServiceAttributeEvent.getAttributes();
+					PrintServiceAttributeSet vPrintServieAttributes = pPrintServiceAttributeEvent.getAttributes();				
 					
 					if (vPrintServieAttributes.containsKey(QueuedJobCount.class)) {
 						vCurQueuedJobCount = ((QueuedJobCount)vPrintServieAttributes.get(QueuedJobCount.class)).getValue();
 						
-						if ((vCurQueuedJobCount < lastqueuedjobcount) || (vCurQueuedJobCount == 0 && isPrinting)) {
+						if ((vCurQueuedJobCount < lastqueuedjobcount) || (vCurQueuedJobCount == 0 && isPrinting.get())) {
 							if (vPrintServieAttributes.containsKey(PrinterIsAcceptingJobs.class)) {
 								vIsAcceptingJobs = (PrinterIsAcceptingJobs)vPrintServieAttributes.get(PrinterIsAcceptingJobs.class);
 								
 								if (vIsAcceptingJobs == PrinterIsAcceptingJobs.ACCEPTING_JOBS) pJobCompletedCallable.completedJob();
 								else pJobFailedCallable.canceledJob();
 							}else pJobCompletedCallable.completedJob();
-						}
-						
-						isPrinting = false;
+							
+							isPrinting.set(false);
+						}else if (vCurQueuedJobCount > 0) isPrinting.set(true);
 						
 						lastqueuedjobcount = vCurQueuedJobCount;
 					}else LogManager.handleMessage("Printer doesn't support queuedjobcount");
@@ -436,7 +441,7 @@ public class ZinePrintingManager extends BasicManager {
 		});
 	}
 	
-	/**	Wf	23.01.2024
+	/**	Wf	07.01.2025
 	 * 
 	 * @param pID
 	 * @throws Exception
@@ -447,7 +452,7 @@ public class ZinePrintingManager extends BasicManager {
 		
 		Paper vPaperA4 = new Paper();
 		Paper vPaperA5 = new Paper();
-		LogManager.createLogEntry("PrintSide: "+pPrintSide);
+		
 		vPaperA4.setSize(PDRectangle.A4.getWidth(), PDRectangle.A4.getHeight());
 		vPaperA5.setSize(PDRectangle.A5.getWidth(), PDRectangle.A5.getHeight());
 		
@@ -538,9 +543,9 @@ public class ZinePrintingManager extends BasicManager {
 				vBook.append(new PDFPrintable(vDocument, Scaling.SHRINK_TO_FIT, false, 0, false), vPageFormat, vDocument.getNumberOfPages());
 				
 				printJob.setPageable(vBook);
-				printJob.print(vPrintAttributes);
+				printJob.setJobName(""+vPrintingElement.getName());
 				
-				isPrinting = true;
+				startPrinting(vPrintAttributes);
 			}
 		}else throw new Exception("04; prE, ZPM");
 	}
@@ -550,7 +555,7 @@ public class ZinePrintingManager extends BasicManager {
 	 */
 	public void canclePrinting() {
 		printJob.cancel();
-		isPrinting = false;
+		isPrinting.set(false);
 	}
 	
 	/**	Wf 16.01.2024
@@ -599,5 +604,21 @@ public class ZinePrintingManager extends BasicManager {
 		
 		return vRet;
 	}
+	
+	/**	Wf	07.01.2025
+	 * 
+	 * @param pPrintAttributes
+	 */
+	private void startPrinting(PrintRequestAttributeSet pPrintAttributes){
+		Platform.runLater(() -> {
+			try {
+				if (!isPrinting.get()) {
+					printJob.print(pPrintAttributes);
+					isPrinting.set(true);
+				}else startPrinting(pPrintAttributes);
+			}catch(Exception ex)  {LogManager.handleException(ex);}
+		});
+	}
+	
 	
 }

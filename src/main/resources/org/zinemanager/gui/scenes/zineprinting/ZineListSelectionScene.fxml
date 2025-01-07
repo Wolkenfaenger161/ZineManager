@@ -9,8 +9,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="org.zinemanager.gui.controller.zineprinting.ZineListSelectionController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineprinting.ZineListSelectionController">
    <children>
       <Label text="Zinelist Auswahl">
          <font>
@@ -35,9 +34,14 @@
             </VBox>
             <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="40.0">
                <children>
+                  <VBox minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
+                     <children>
+                        <Button fx:id="btFastPrint" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#fastPrint" prefHeight="30.0" prefWidth="150.0" text="Schnelldruck" />
+                        <Button fx:id="btProgress" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#progress" prefHeight="30.0" prefWidth="150.0" text="Auswählen" />
+                     </children>
+                  </VBox>
                   <VBox alignment="BOTTOM_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0">
                      <children>
-                        <Button fx:id="btProgress" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#progress" prefHeight="30.0" prefWidth="150.0" text="Auswählen" />
                         <Button fx:id="btEdit" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#editObject" prefHeight="30.0" prefWidth="150.0" text="Bearbeiten" />
                         <Button fx:id="btRemove" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeObject" prefHeight="30.0" prefWidth="150.0" text="Entfernen" />
                      </children>

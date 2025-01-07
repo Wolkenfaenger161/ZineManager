@@ -15,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineinventory.MainZineInventoryController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineinventory.MainZineInventoryController">
    <children>
       <MenuBar minHeight="-Infinity" minWidth="-Infinity" VBox.vgrow="ALWAYS">
         <menus>
@@ -124,7 +124,7 @@
                   <TabPane fx:id="tpZineLists" minHeight="-Infinity" minWidth="-Infinity" prefHeight="490.0" prefWidth="580.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
                   <HBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
                      <children>
-                        <Button fx:id="btZinesUpdate" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateZines" prefHeight="30.0" prefWidth="160.0" text="Zines aktualisieren" />
+                        <Button fx:id="btZinesUpdate" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#updateZines" prefHeight="30.0" prefWidth="160.0" text="Zinestand speichern" />
                         <Separator minHeight="-Infinity" minWidth="-Infinity" visible="false" HBox.hgrow="ALWAYS" />
                         <Button fx:id="btInputClean" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#cleanInput" prefHeight="30.0" prefWidth="160.0" text="Eingaben zurücksetzten" />
                      </children>

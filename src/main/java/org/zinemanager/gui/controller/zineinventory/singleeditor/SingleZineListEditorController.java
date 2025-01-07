@@ -1,4 +1,4 @@
-/**	ZineManager v0.0		Wf	05.10.2023
+/**	ZineManager v0.21		Wf	05.01.2025
  * 	
  * 	gui.controller.zineinventory.multieditor
  * 	  BasicController
@@ -21,33 +21,39 @@
 
 package org.zinemanager.gui.controller.zineinventory.singleeditor;
 
+import java.util.function.Predicate;
+
 import org.zinemanager.gui.controller.ParentControllerInterface;
 import org.zinemanager.gui.tableelements.NameTableElement;
+import org.zinemanager.gui.tableelements.ZineListTableElement;
 import org.zinemanager.logic.manager.LogManager;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 
 public class SingleZineListEditorController <ParentController extends ParentControllerInterface>
 			extends BasicSingleEditorController<ParentController> {
 	@FXML
 	private Label lTitle;
 	@FXML
-	private TextField tfName;
+	private TextField tfName, tfSelectedZines, tfPotentialZines;
 	@FXML
-	private Button btAddZine, btRemoveZine;
+	private Button btAddZine, btRemoveZine, btSearchSelectedZines, btSearchPotentialZines;
 	
 	@FXML
 	private ListView<NameTableElement> lvSelectedZines, lvPotentialZines;
 	
 	private ObservableList<NameTableElement> liSelectedZines, liPotentialZines;
+	private FilteredList<NameTableElement> liFilteredSelectedZines, liFilteredPotentialZines;
 	
-	/**	Wf	03.10.2023
+	/**	Wf	06.01.2025
 	 * 
 	 */
 	public SingleZineListEditorController() {
@@ -55,11 +61,14 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 		
 		liSelectedZines  = null;
 		liPotentialZines = null;
+		
+		liFilteredSelectedZines  = null;
+		liFilteredPotentialZines = null;
 	}
 	
 	//----------------------------------------------------------------------------------------------------
 	
-	/**	Wf	05.10.2023
+	/**	Wf	06.01.2025
 	 * 
 	 */
 	public void setUp() {
@@ -70,6 +79,16 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 		
 		liSelectedZines  = FXCollections.observableArrayList();
 		liPotentialZines = FXCollections.observableArrayList();
+		
+		liFilteredSelectedZines  = new FilteredList<NameTableElement>(liSelectedZines);
+		liFilteredPotentialZines = new FilteredList<NameTableElement>(liPotentialZines);
+		
+		tfSelectedZines.setOnKeyPressed(pEvent -> {
+			if (pEvent.getCode() == KeyCode.ENTER) filterSelected();
+		});
+		tfPotentialZines.setOnKeyPressed(pEvent -> {
+			if (pEvent.getCode() == KeyCode.ENTER) filterPotential();
+		});
 		
 		try {
 			liPotentialZines.setAll( generateNewNameTableElementList(basicManager.getZineIDs() , false, pID -> {return basicManager.getZineName(pID);}, null) );
@@ -94,8 +113,10 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 			setEnabledButtons(true);
 		});
 		
-		lvSelectedZines.setItems(liSelectedZines);
-		lvPotentialZines.setItems(liPotentialZines);
+		//lvSelectedZines.setItems(liSelectedZines);
+		//lvPotentialZines.setItems(liPotentialZines);
+		lvSelectedZines.setItems(liFilteredSelectedZines);
+		lvPotentialZines.setItems(liFilteredPotentialZines);
 		
 		setEnabled();
 	}
@@ -174,6 +195,26 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 		}else LogManager.handleMessage("Ungültige Eingabe!");
 	}
 	
+	//----------------------------------------------------------------------------------------------------
+	
+	/**	Wf	06.01.2025
+	 * 
+	 */
+	@FXML
+	public void filterSelected() {
+		liFilteredSelectedZines.setPredicate(createZineListPredicate(tfSelectedZines.getText()));
+		lvSelectedZines.refresh();
+	}
+	
+	/**	Wf	06.01.2025
+	 * 
+	 */
+	@FXML
+	public void filterPotential() {
+		liFilteredPotentialZines.setPredicate(createZineListPredicate(tfPotentialZines.getText()));
+		lvPotentialZines.refresh();
+	}
+	
 //--------------------------------------------------------------------------------------------------------
 	
 	/**	Wf	03.10.2023
@@ -181,6 +222,23 @@ public class SingleZineListEditorController <ParentController extends ParentCont
 	 */
 	protected boolean isInputValid() {
 		return !tfName.getText().equals("");
+	}
+	
+	/**	Wf	06.01.2025
+	 * 
+	 * @param pSearchText
+	 * @return
+	 */
+	protected Predicate<NameTableElement> createZineListPredicate(String pSearchText){
+		return pNameTableElement -> {
+			boolean vRet = true;
+			
+			if (!pSearchText.equals("")){
+				vRet = pNameTableElement.getName().toLowerCase().contains(pSearchText.toLowerCase());
+			}
+			
+			return vRet;
+		};
 	}
 	
 }

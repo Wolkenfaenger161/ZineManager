@@ -6,12 +6,12 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TitledPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/18" fx:controller="org.zinemanager.gui.controller.zineinventory.singleeditor.SingleZineListEditorController">
+<VBox alignment="TOP_CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="10.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.zinemanager.gui.controller.zineinventory.singleeditor.SingleZineListEditorController">
    <children>
       <Label fx:id="lTitle" minHeight="-Infinity" minWidth="-Infinity" text="Zineliste hinzufügen">
          <font>
@@ -28,13 +28,23 @@
             </HBox>
             <HBox minHeight="-Infinity" minWidth="-Infinity" spacing="20.0">
                <children>
-                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity">
+                  <VBox alignment="CENTER" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0">
                      <children>
                         <Label minHeight="-Infinity" minWidth="-Infinity" text="Ausgewählte:">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
+                        <TitledPane minHeight="-Infinity" minWidth="-Infinity" text="Filter">
+                           <content>
+                              <HBox fillHeight="false" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="tfSelectedZines" minHeight="-Infinity" minWidth="-Infinity" />
+                                    <Button fx:id="btSearchSelectedZines" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#filterSelected" text="Filtern" />
+                                 </children>
+                              </HBox>
+                           </content>
+                        </TitledPane>
                         <ScrollPane minHeight="-Infinity" minWidth="-Infinity">
                            <content>
                               <ListView fx:id="lvSelectedZines" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" />
@@ -48,13 +58,23 @@
                         <Button fx:id="btRemoveZine" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#removeZine" prefHeight="30.0" prefWidth="100.0" text="Entfernen" />
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0">
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="5.0">
                      <children>
                         <Label minHeight="-Infinity" minWidth="-Infinity" text="Mögliche:">
                            <font>
                               <Font name="System Bold" size="14.0" />
                            </font>
                         </Label>
+                        <TitledPane minHeight="-Infinity" minWidth="-Infinity" text="Filter">
+                           <content>
+                              <HBox fillHeight="false" minHeight="-Infinity" minWidth="-Infinity" spacing="5.0">
+                                 <children>
+                                    <TextField fx:id="tfPotentialZines" minHeight="-Infinity" minWidth="-Infinity" />
+                                    <Button fx:id="btSearchPotentialZines" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" onAction="#filterPotential" text="Filtern" />
+                                 </children>
+                              </HBox>
+                           </content>
+                        </TitledPane>
                         <ScrollPane minHeight="-Infinity" minWidth="-Infinity">
                            <content>
                               <ListView fx:id="lvPotentialZines" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" />
