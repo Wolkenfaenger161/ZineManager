@@ -8,6 +8,7 @@ ToDo.txt
 
 build/classes
 build/generated
+build/reports
 build/resources
 build/scripts
 build/tmp
@@ -18,4 +19,4 @@ build/gluonfx/x86_64-linux/gvm
 bin/test
 src/test/java/org/*
 /bin/
-/build/
+
